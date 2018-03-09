@@ -20,7 +20,7 @@ class Blocksync():
     def get_status(self):
         return self.adapter.call('get_status')
 
-    def get_block_stream(self, start_block=1, mode='head', batch_size=10):
+    def get_block_stream(self, start_block=None, mode='head', batch_size=10):
         while True:
             status = self.get_status()
             # Determine the current head block
@@ -28,6 +28,9 @@ class Blocksync():
             # If set to irreversible, override the head block
             if mode == 'irreversible':
                 head_block = status['last_irreversible_block_num']
+            # If no start block is specified, start streaming from head
+            if start_block is None:
+                start_block = head_block
             # Set initial remaining blocks for this stream
             remaining = head_block - start_block
             # While remaining blocks exist - batch load them
