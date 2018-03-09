@@ -2,6 +2,12 @@
 
 A simple library to stream blocks and operations for digesting into other mediums.
 
+#### Requirements
+
+`pip install -r requirements.txt`
+
+- [jsonrpcclient](https://github.com/bcb/jsonrpcclient)
+
 ### Example - streaming blocks
 
 ``` js
