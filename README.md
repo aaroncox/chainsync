@@ -4,7 +4,7 @@ A simple library to stream blocks and operations for digesting into other medium
 
 ### Example - streaming blocks
 
-```
+``` js
 from blocksync import Blocksync
 
 s = Blocksync(endpoints=['https://api.steemitstage.com'])
@@ -17,7 +17,7 @@ for block in s.get_block_stream(start_block=20512349, batch_size=100):
 
 A custom adapter can be supplied to allow parsing of a specific blockchain
 
-```
+``` js
 from blocksync import Blocksync
 from blocksync.adapters.steem import SteemAdapter
 
