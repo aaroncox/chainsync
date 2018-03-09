@@ -33,3 +33,11 @@ s = Blocksync(adapter=a)
 for block in s.get_block_stream(start_block=20512349, batch_size=100):
     print("{} - {}".format(block['height'], block['witness']))
 ```
+
+## Adapters
+
+Adapters can be added and configured to allow access to other similar blockchains.
+
+#### Steem
+
+The Steem blockchain adapter currently requires v0.19.4 of steemd - containing the new AppBase API layer. 
