@@ -1,6 +1,6 @@
 import time
 
-from adapters.steem import SteemAdapter
+from blocksync.adapters.steem import SteemAdapter
 
 class Blocksync():
 

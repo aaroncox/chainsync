@@ -1,5 +1,5 @@
 from blocksync import Blocksync
-from adapters.steem import SteemAdapter
+from blocksync.adapters.steem import SteemAdapter
 
 import unittest
 

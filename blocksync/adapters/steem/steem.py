@@ -1,5 +1,5 @@
-from adapters.abstract import AbstractAdapter
-from adapters.base import BaseAdapter
+from blocksync.adapters.abstract import AbstractAdapter
+from blocksync.adapters.base import BaseAdapter
 
 from jsonrpcclient.http_client import HTTPClient
 from jsonrpcclient.request import Request
@@ -10,7 +10,8 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
 
     def get_block(self, block_num):
         response = HTTPClient(self.endpoint).request('block_api.get_block', block_num=block_num)
-        response['height'] = int(str(response['block_id'])[:8], base=16)
+        if 'block_id' in response:
+            response['height'] = int(str(response['block_id'])[:8], base=16)
         return response['block']
 
     def get_blocks(self, start_block=1, blocks=10):
