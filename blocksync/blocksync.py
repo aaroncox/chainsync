@@ -44,9 +44,25 @@ class Blocksync():
                     blocks = remaining
                 # Iterate batch of blocks
                 for block in self.get_blocks(start_block, blocks=blocks):
-                    # Yield data as generator
+                    # Yield block data
                     yield block
                     # Update the height to start on the next unyielded block
                     start_block = block['block_num'] + 1
             # Pause loop for block time
             time.sleep(3)
+
+    def get_ops_stream(self, start_block=None, mode='head', batch_size=10, ops_whitelist=[]):
+        # Stream blocks using the parameters passed to the op stream
+        for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
+            # Loop through all transactions within this block
+            for i, tx in enumerate(block['transactions']):
+                # If a whitelist is defined, only allow whitelisted operations through
+                ops = (op for op in tx['operations'] if not ops_whitelist or op[0] in ops_whitelist)
+                for opType, opData in ops:
+                    # Add some useful context to the operation
+                    opData['block_num'] = block['block_num']
+                    opData['operation_type'] = opType
+                    opData['timestamp'] = block['timestamp']
+                    opData['transaction_id'] = block['transaction_ids'][i]
+                    # Yield op data
+                    yield opData
