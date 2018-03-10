@@ -51,13 +51,13 @@ class Blocksync():
             # Pause loop for block time
             time.sleep(3)
 
-    def get_op_stream(self, start_block=None, mode='head', batch_size=10, ops_whitelist=[]):
+    def get_op_stream(self, start_block=None, mode='head', batch_size=10, whitelist=[]):
         # Stream blocks using the parameters passed to the op stream
         for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
             # Loop through all transactions within this block
             for i, tx in enumerate(block['transactions']):
                 # If a whitelist is defined, only allow whitelisted operations through
-                ops = (op for op in tx['operations'] if not ops_whitelist or op[0] in ops_whitelist)
+                ops = (op for op in tx['operations'] if not whitelist or op[0] in whitelist)
                 for opType, opData in ops:
                     # Add some useful context to the operation
                     opData['block_num'] = block['block_num']

@@ -21,5 +21,5 @@ for op in s.get_op_stream():
     print("{}: {} - {}".format(datetime.datetime.now(), op['block_num'], op['operation_type']))
 
 print('Streaming vote ops only...')
-for op in s.get_op_stream(ops_whitelist=['vote']):
+for op in s.get_op_stream(whitelist=['vote']):
     print("{}: {} - {} by {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['voter']))
