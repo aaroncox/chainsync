@@ -14,4 +14,4 @@ for block in blocks:
 
 print('Streaming blocks...')
 for block in s.get_block_stream(batch_size=100, mode='irreversible'):
-    print("{}: {} - {}".format(datetime.datetime.now(), block['height'], block['witness']))
+    print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))

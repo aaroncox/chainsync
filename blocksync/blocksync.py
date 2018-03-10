@@ -47,6 +47,6 @@ class Blocksync():
                     # Yield data as generator
                     yield block
                     # Update the height to start on the next unyielded block
-                    start_block = block['height'] + 1
+                    start_block = block['block_num'] + 1
             # Pause loop for block time
             time.sleep(3)
