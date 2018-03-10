@@ -51,7 +51,7 @@ class Blocksync():
             # Pause loop for block time
             time.sleep(3)
 
-    def get_ops_stream(self, start_block=None, mode='head', batch_size=10, ops_whitelist=[]):
+    def get_op_stream(self, start_block=None, mode='head', batch_size=10, ops_whitelist=[]):
         # Stream blocks using the parameters passed to the op stream
         for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
             # Loop through all transactions within this block
