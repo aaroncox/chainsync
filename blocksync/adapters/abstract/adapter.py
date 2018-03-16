@@ -8,7 +8,7 @@ class AbstractAdapter(ABC):
         pass
 
     @abstractmethod
-    def opData(self, block, opType, opData):
+    def opData(self, block, opType, opData, txIndex):
         pass
 
     @abstractmethod
@@ -21,6 +21,10 @@ class AbstractAdapter(ABC):
 
     @abstractmethod
     def get_config(self):
+        pass
+
+    @abstractmethod
+    def get_methods(self):
         pass
 
     @abstractmethod
