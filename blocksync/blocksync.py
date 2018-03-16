@@ -24,6 +24,7 @@ class Blocksync():
         return self.adapter.call('get_status')
 
     def get_block_stream(self, start_block=None, mode='head', batch_size=10):
+        config = self.get_config()
         while True:
             status = self.get_status()
             # Determine the current head block
@@ -52,7 +53,8 @@ class Blocksync():
                     # Update the height to start on the next unyielded block
                     start_block = block['block_num'] + 1
             # Pause loop for block time
-            time.sleep(3)
+            block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
+            time.sleep(block_interval)
 
     def get_op_stream(self, start_block=None, mode='head', batch_size=10, whitelist=[]):
         # Stream blocks using the parameters passed to the op stream
