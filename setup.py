@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='blocksync',
       version='0.1.0',
@@ -7,5 +7,5 @@ setup(name='blocksync',
       author='Aaron Cox',
       author_email='aaron@greymass.com',
       license='MIT',
-      packages=['blocksync', 'adapters'],
+      packages=find_packages(),
       zip_safe=False)
