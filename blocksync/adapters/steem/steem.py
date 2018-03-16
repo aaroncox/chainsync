@@ -30,3 +30,6 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
 
     def get_status(self):
         return HttpClient(self.endpoint).request('database_api.get_dynamic_global_properties')
+
+    def get_config(self):
+        return HttpClient(self.endpoint).request('database_api.get_config')

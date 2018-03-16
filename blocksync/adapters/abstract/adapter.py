@@ -15,5 +15,9 @@ class AbstractAdapter(ABC):
         pass
 
     @abstractmethod
+    def get_config(self):
+        pass
+
+    @abstractmethod
     def get_status(self):
         pass
