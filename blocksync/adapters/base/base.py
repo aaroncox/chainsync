@@ -52,6 +52,7 @@ class BaseAdapter():
 
             # Execute the call against the loaded adapter
             response = getattr(self, method)(**kwargs)
+
             # Return the response
             return response
 
@@ -60,39 +61,48 @@ class BaseAdapter():
             if len(self.additional_endpoints) > 0:
                 # Get the unavailable_endpoint this failed on
                 unavailable_endpoint = self.endpoint
+
                 # Get the next additional endpoint and set as the current
                 self.endpoint = self.additional_endpoints.pop(0)
-                # Push the previously unavailable back to the end of the list
-                self.additional_endpoints.append(unavailable_endpoint)
+
+                # If we are continiously retrying the servers in the pool
+                if self.retry:
+                    # Push the previously unavailable back to the end of the list
+                    self.additional_endpoints.append(unavailable_endpoint)
 
                 # Logging
                 # print("-------------")
-                # print("call failed on {}, trying {}...".format(unavailable_endpoint, self.endpoint))
+                print("connection error: call failed on {}, swapping to {}...".format(unavailable_endpoint, self.endpoint))
                 # print("called: {}".format(method))
                 # print("kawrgs: {}".format(kwargs))
                 # print("-------------")
-                # Retry the call with the new endpoint
 
+                time.sleep(1)
+
+                # Retry the call with the new endpoint
                 return self.call(method, **kwargs)
 
+            # If no endpoints are reachable, and retry enabled, try again
             elif self.retry:
-                # If no endpoints are reachable, and retry enabled, try again
-                print("connection error: no endpoints responding, retrying in 10 seconds.")
                 # print("-------------")
+                print("connection error: no endpoints responding, retrying in 10 seconds.")
                 # print("endpoint: {}".format(self.endpoint))
                 # print("endpoints: {}".format(self.endpoints))
                 # print("additional: {}".format(self.additional_endpoints))
                 # print("called: {}".format(method))
                 # print("kawrgs: {}".format(kwargs))
                 # print("-------------")
+
                 time.sleep(10)
+
                 # Try again
                 return self.call(method, **kwargs)
 
+            # If no endpoints are reachable, and retry disabled, raise an exception
             else:
-                # If no endpoints are reachable, and retry disabled, raise an exception
                 # print("-------------")
                 # print("called: {}".format(method))
                 # print("kawrgs: {}".format(kwargs))
                 # print("-------------")
+
                 raise Exception("connection error: no available endpoints and not retrying")
