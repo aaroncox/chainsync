@@ -1,15 +1,13 @@
 import time
 
-from blocksync.adapters.steem import SteemAdapter
-
 class Blocksync():
 
-    def __init__(self, endpoints=['http://localhost:8090'], adapter=None, retry=True, debug=False):
+    def __init__(self, adapter, endpoints=['http://localhost:8090'], retry=True, debug=False):
         self.debug = debug
         if adapter:
             self.adapter = adapter
         else:
-            self.adapter = SteemAdapter(endpoints, retry=retry, debug=debug)
+            raise Exception('adapter required: you must specify a adapter')
 
     def get_block(self, block_num):
         return self.adapter.call('get_block', block_num=block_num)
@@ -53,6 +51,7 @@ class Blocksync():
                 # Remaining blocks to process
                 remaining = head_block - start_block
             # Pause loop for block time
+
             block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
             time.sleep(block_interval)
 
