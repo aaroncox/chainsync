@@ -46,10 +46,10 @@ class Blocksync():
                     blocks = remaining
                 # Iterate batch of blocks
                 for block in self.get_blocks(start_block, blocks=blocks):
-                    # Yield block data
-                    yield block
                     # Update the height to start on the next unyielded block
                     start_block = block['block_num'] + 1
+                    # Yield block data
+                    yield block
                 # Remaining blocks to process
                 remaining = head_block - start_block
             # Pause loop for block time
