@@ -4,12 +4,12 @@ from blocksync.adapters.steem import SteemAdapter
 
 class Blocksync():
 
-    def __init__(self, endpoints=['http://localhost:8090'], adapter=None, debug=False):
+    def __init__(self, endpoints=['http://localhost:8090'], adapter=None, retry=True, debug=False):
         self.debug = debug
         if adapter:
             self.adapter = adapter
         else:
-            self.adapter = SteemAdapter(endpoints, debug)
+            self.adapter = SteemAdapter(endpoints, retry=retry, debug=debug)
 
     def get_block(self, block_num):
         return self.adapter.call('get_block', block_num=block_num)
