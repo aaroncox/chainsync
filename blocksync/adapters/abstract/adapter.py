@@ -3,6 +3,10 @@ from abc import ABC, abstractmethod
 class AbstractAdapter(ABC):
 
     @abstractmethod
+    def opData(self, block, opType, opData):
+        pass
+
+    @abstractmethod
     def get_block(self, height):
         pass
 

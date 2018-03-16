@@ -59,10 +59,4 @@ class Blocksync():
                 # If a whitelist is defined, only allow whitelisted operations through
                 ops = (op for op in tx['operations'] if not whitelist or op[0] in whitelist)
                 for opType, opData in ops:
-                    # Add some useful context to the operation
-                    opData['block_num'] = block['block_num']
-                    opData['operation_type'] = opType
-                    opData['timestamp'] = block['timestamp']
-                    opData['transaction_id'] = block['transaction_ids'][i]
-                    # Yield op data
-                    yield opData
+                    yield self.adapter.opData(block, opType, opData)
