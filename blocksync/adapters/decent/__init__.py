@@ -1,0 +1,1 @@
+from .decent import DecentAdapter
