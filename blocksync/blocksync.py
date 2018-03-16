@@ -39,8 +39,6 @@ class Blocksync():
             remaining = head_block - start_block
             # While remaining blocks exist - batch load them
             while remaining > 0:
-                # Remaining blocks to process
-                remaining = head_block - start_block
                 # Determine how many blocks to load with this request
                 blocks = batch_size
                 # Modify the amount of blocks to load if lower than the batch_size
@@ -52,6 +50,8 @@ class Blocksync():
                     yield block
                     # Update the height to start on the next unyielded block
                     start_block = block['block_num'] + 1
+                # Remaining blocks to process
+                remaining = head_block - start_block
             # Pause loop for block time
             block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
             time.sleep(block_interval)
