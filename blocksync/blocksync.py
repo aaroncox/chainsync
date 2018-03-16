@@ -60,8 +60,8 @@ class Blocksync():
         # Stream blocks using the parameters passed to the op stream
         for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
             # Loop through all transactions within this block
-            for i, tx in enumerate(block['transactions']):
+            for txIndex, tx in enumerate(block['transactions']):
                 # If a whitelist is defined, only allow whitelisted operations through
                 ops = (op for op in tx['operations'] if not whitelist or op[0] in whitelist)
                 for opType, opData in ops:
-                    yield self.adapter.opData(block, opType, opData)
+                    yield self.adapter.opData(block, opType, opData, txIndex=txIndex)
