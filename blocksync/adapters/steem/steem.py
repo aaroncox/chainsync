@@ -8,6 +8,10 @@ from jsonrpcclient.request import Request
 
 class SteemAdapter(AbstractAdapter, BaseAdapter):
 
+    config = {
+        'BLOCK_INTERVAL': 'STEEM_BLOCK_INTERVAL'
+    }
+
     def opData(self, block, opType, opData):
         # Add some useful context to the operation
         opData['block_num'] = block['block_num']

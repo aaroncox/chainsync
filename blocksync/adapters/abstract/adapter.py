@@ -2,6 +2,11 @@ from abc import ABC, abstractmethod
 
 class AbstractAdapter(ABC):
 
+    @property
+    @abstractmethod
+    def config(self):
+        pass
+
     @abstractmethod
     def opData(self, block, opType, opData):
         pass
