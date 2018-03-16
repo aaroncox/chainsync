@@ -2,6 +2,11 @@
 
 A simple library to stream blocks and operations for digesting into other mediums.
 
+### Install
+
+`pip install blocksync`
+
+
 #### Requirements
 
 `pip install -r requirements.txt`
