@@ -9,31 +9,33 @@ from jsonrpcclient.request import Request
 class SteemAdapter(AbstractAdapter, BaseAdapter):
 
     config = {
-        'BLOCK_INTERVAL': 'STEEM_BLOCK_INTERVAL'
+        'BLOCK_INTERVAL': 'STEEMIT_BLOCK_INTERVAL'
     }
 
-    def opData(self, block, opType, opData):
+    def opData(self, block, opType, opData, txIndex=False):
         # Add some useful context to the operation
         opData['block_num'] = block['block_num']
         opData['operation_type'] = opType
         opData['timestamp'] = datetime.strptime(block['timestamp'], '%Y-%m-%dT%H:%M:%S')
-        if 'transaction_ids' in block:
-            opData['transaction_id'] = block['transaction_ids'][i]
+        if txIndex and 'transaction_ids' in block:
+            opData['transaction_id'] = block['transaction_ids'][txIndex]
         return opData
 
     def get_block(self, block_num):
-        response = HttpClient(self.endpoint).request('block_api.get_block', block_num=block_num)
+        response = HttpClient(self.endpoint).request('get_block', [block_num])
         if 'block_id' in response:
             response['block_num'] = int(str(response['block_id'])[:8], base=16)
-        return response['block']
+        return response
 
     def get_blocks(self, start_block=1, blocks=10):
-        requests = [Request('block_api.get_block', block_num=i) for i in range(start_block, start_block + blocks)]
-        response = HttpClient(self.endpoint).send(requests)
-        return [dict(r['result']['block'], **{'block_num': int(str(r['result']['block']['block_id'])[:8], base=16)}) for r in response]
-
-    def get_status(self):
-        return HttpClient(self.endpoint).request('database_api.get_dynamic_global_properties')
+        for i in range(start_block, start_block + blocks):
+            yield self.get_block(i)
 
     def get_config(self):
-        return HttpClient(self.endpoint).request('database_api.get_config')
+        return HttpClient(self.endpoint).request('get_config')
+
+    def get_methods(self):
+        return []
+
+    def get_status(self):
+        return HttpClient(self.endpoint).request('get_dynamic_global_properties')
