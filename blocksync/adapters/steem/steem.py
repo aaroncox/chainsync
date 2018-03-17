@@ -29,7 +29,7 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
 
     def get_blocks(self, start_block=1, blocks=10):
         for i in range(start_block, start_block + blocks):
-            yield self.get_block(i)
+            yield self.call('get_block', block_num=i)
 
     def get_config(self):
         return HttpClient(self.endpoint).request('get_config')
