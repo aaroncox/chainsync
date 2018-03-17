@@ -30,21 +30,30 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
     }
 
     def opData(self, block, opType, opData, txIndex=False):
+        # Ensure the format of the timestamp as a datetime
+        if not isinstance(block['timestamp'], datetime):
+            opData['timestamp'] = datetime.strptime(block['timestamp'], '%Y-%m-%dT%H:%M:%S')
+        else:
+            opData['timestamp'] = block['timestamp']
         # Add some useful context to the operation
         opData['block_num'] = block['block_num']
         opData['operation_type'] = opType
-        if not isinstance(block['timestamp'], datetime):
-            opData['timestamp'] = datetime.strptime(block['timestamp'], '%Y-%m-%dT%H:%M:%S')
         opData['transaction_id'] = block['transaction_ids'][txIndex]
         return opData
 
     def vOpData(self, vop):
-        # Extract the operation from the vop object
+        # Extract the operation from the vop object format
         opType, opData = vop['op']
+
+        # Ensure the format of the timestamp as a datetime
+        if not isinstance(vop['timestamp'], datetime):
+            opData['timestamp'] = datetime.strptime(vop['timestamp'], '%Y-%m-%dT%H:%M:%S')
+        else:
+            opData['timestamp'] = vop['timestamp']
+
         # Add some useful context to the operation
         opData['block_num'] = vop['block']
         opData['operation_type'] = opType
-        opData['timestamp'] = datetime.strptime(vop['timestamp'], '%Y-%m-%dT%H:%M:%S')
         opData['transaction_id'] = vop['trx_id']
         return opData
 
