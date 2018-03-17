@@ -1,8 +1,8 @@
 import datetime
 from blocksync import Blocksync
-from blocksync.adapters.steem import SteemAdapter
+from blocksync.adapters.steemv2 import SteemV2Adapter
 
-adapter = SteemAdapter(endpoints=['https://api.steemit.com'], debug=False)
+adapter = SteemV2Adapter(endpoints=['https://api.steemitstage.com/'])
 
 blocksync = Blocksync(adapter)
 
