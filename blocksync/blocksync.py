@@ -21,6 +21,7 @@ class Blocksync():
     def get_status(self):
         return self.adapter.call('get_status')
 
+    # returns a stream of blocks
     def get_block_stream(self, start_block=None, mode='head', batch_size=10):
         config = self.get_config()
         while True:
@@ -55,6 +56,7 @@ class Blocksync():
             block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
             time.sleep(block_interval)
 
+    # returns a stream of ops
     def get_op_stream(self, start_block=None, mode='head', batch_size=10, whitelist=[]):
         # Stream blocks using the parameters passed to the op stream
         for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
@@ -62,5 +64,19 @@ class Blocksync():
             for txIndex, tx in enumerate(block['transactions']):
                 # If a whitelist is defined, only allow whitelisted operations through
                 ops = (op for op in tx['operations'] if not whitelist or op[0] in whitelist)
+                # Iterate and yield each op
                 for opType, opData in ops:
                     yield self.adapter.opData(block, opType, opData, txIndex=txIndex)
+
+    # returns a stream of blocks and ops, in a tuple of ('type', 'data')
+    def get_blockop_stream(self, start_block=None, mode='head', batch_size=10, whitelist=[]):
+        # Stream blocks using the parameters passed to the op stream
+        for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
+            yield ('block', block)
+            # Loop through all transactions within this block
+            for txIndex, tx in enumerate(block['transactions']):
+                # If a whitelist is defined, only allow whitelisted operations through
+                ops = (op for op in tx['operations'] if not whitelist or op[0] in whitelist)
+                # Iterate and yield each op
+                for opType, opData in ops:
+                    yield ('op', self.adapter.opData(block, opType, opData, txIndex=txIndex))
