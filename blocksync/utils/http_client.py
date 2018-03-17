@@ -17,11 +17,9 @@ class HttpClient(HTTPClient):
         return response
 
     def request(self, method_name, *args, **kwargs):
-        try:
-            response = super(HttpClient, self).send(Request(method_name, *args, **kwargs))
-            if not response or 'error' in response:
-                print("response")
-                print(response)
-                raise requests.RequestException()
-            return response
-        except ParseResponseError:
+        response = super(HttpClient, self).send(Request(method_name, *args, **kwargs))
+        if not response or 'error' in response:
+            print("response")
+            print(response)
+            raise requests.RequestException()
+        return response
