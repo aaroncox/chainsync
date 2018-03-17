@@ -25,3 +25,14 @@ for op in blocksync.get_op_stream():
 print('\nStreaming vote ops only...')
 for op in blocksync.get_op_stream(whitelist=['vote']):
     print("{}: {} - {} by {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['voter']))
+
+print('\nStreaming all blocks + ops...')
+for dataType, data in blocksync.get_blockop_stream(start_block=20731232):
+    # print(dataType)
+    dataHeader = "{}: {}".format(datetime.datetime.now(), dataType)
+    if dataType == "op":
+        print("{} {} {}".format(dataHeader, data['transaction_id'], data['operation_type']))
+    if dataType == "block":
+        txCount = len(data['transactions'])
+        opCount = sum([len(tx['operations']) for tx in data['transactions']])
+        print("{} - tx: {} / ops: {}".format(dataHeader, txCount, opCount))
