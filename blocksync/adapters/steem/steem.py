@@ -23,8 +23,12 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
 
     def get_block(self, block_num):
         response = HttpClient(self.endpoint).request('get_block', [block_num])
-        if 'block_id' in response:
+        try:
             response['block_num'] = int(str(response['block_id'])[:8], base=16)
+            response['timestamp'] = datetime.strptime(response['timestamp'], '%Y-%m-%dT%H:%M:%S')
+        except KeyError as e:
+            print(e)
+            print(response)
         return response
 
     def get_blocks(self, start_block=1, blocks=10):
