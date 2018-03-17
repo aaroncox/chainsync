@@ -73,11 +73,6 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
     def get_blocks(self, start_block=1, blocks=10):
         requests = [Request('block_api.get_block', block_num=i) for i in range(start_block, start_block + blocks)]
         response = HttpClient(self.endpoint).send(requests)
-        for r in response:
-            if 'result' not in r:
-                print(r)
-            if 'result' in r and 'block' not in r['result']:
-                print(r)
         return [dict(r['result']['block'], **{'block_num': int(str(r['result']['block']['block_id'])[:8], base=16)}) for r in response]
 
     def get_config(self):
