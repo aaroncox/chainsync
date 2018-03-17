@@ -139,14 +139,9 @@ class Blocksync():
                     yield self.adapter.vOpData(vop)
 
     # returns a stream of blocks and ops, in a tuple of ('type', 'data')
-    def get_blockop_stream(self, start_block=None, mode='head', batch_size=10, whitelist=[]):
+    def get_blockop_stream(self, start_block=None, mode='head', batch_size=10, virtual_ops=True, virtual_only=False, whitelist=[]):
         # Stream blocks using the parameters passed to the op stream
         for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
             yield ('block', block)
-            # Loop through all transactions within this block
-            for txIndex, tx in enumerate(block['transactions']):
-                # If a whitelist is defined, only allow whitelisted operations through
-                ops = (op for op in tx['operations'] if not whitelist or op[0] in whitelist)
-                # Iterate and yield each op
-                for opType, opData in ops:
-                    yield ('op', self.adapter.opData(block, opType, opData, txIndex=txIndex))
+            for op in self.get_ops_from_block(block, virtual_ops=virtual_ops, virtual_only=virtual_only, whitelist=whitelist):
+                yield ('op', op)
