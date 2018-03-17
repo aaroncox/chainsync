@@ -38,6 +38,16 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         opData['transaction_id'] = block['transaction_ids'][txIndex]
         return opData
 
+    def vOpData(self, vop):
+        # Extract the operation from the vop object
+        opType, opData = vop['op']
+        # Add some useful context to the operation
+        opData['block_num'] = vop['block']
+        opData['operation_type'] = opType
+        opData['timestamp'] = datetime.strptime(vop['timestamp'], '%Y-%m-%dT%H:%M:%S')
+        opData['transaction_id'] = vop['trx_id']
+        return opData
+
     def get_block(self, block_num):
         response = HttpClient(self.endpoint).request('block_api.get_block', block_num=block_num)
         if 'block_id' in response:

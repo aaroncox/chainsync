@@ -12,6 +12,10 @@ class AbstractAdapter(ABC):
         pass
 
     @abstractmethod
+    def vOpData(self, vop):
+        pass
+
+    @abstractmethod
     def get_block(self, height):
         pass
 
