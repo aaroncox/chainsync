@@ -20,7 +20,7 @@ for block in blocksync.get_block_stream(batch_size=100, mode='irreversible'):
 
 print('\nStreaming all ops...')
 for op in blocksync.get_op_stream():
-    print("{}: {} - {}".format(datetime.datetime.now(), op['block_num'], op['operation_type']))
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
 
 print('\nStreaming vote ops only...')
 for op in blocksync.get_op_stream(whitelist=['vote']):
