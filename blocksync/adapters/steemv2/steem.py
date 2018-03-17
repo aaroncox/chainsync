@@ -17,15 +17,13 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         opData['block_num'] = block['block_num']
         opData['operation_type'] = opType
         opData['timestamp'] = datetime.strptime(block['timestamp'], '%Y-%m-%dT%H:%M:%S')
-        if 'transaction_ids' in block:
-            opData['transaction_id'] = block['transaction_ids'][i]
+        opData['transaction_id'] = block['transaction_ids'][i]
         return opData
 
     def get_block(self, block_num):
         response = HttpClient(self.endpoint).request('block_api.get_block', block_num=block_num)
         if 'block_id' in response:
             response['block_num'] = int(str(response['block_id'])[:8], base=16)
-        print(response)
         return response['block']
 
     def get_blocks(self, start_block=1, blocks=10):

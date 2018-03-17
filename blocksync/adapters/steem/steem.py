@@ -16,9 +16,9 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         # Add some useful context to the operation
         opData['block_num'] = block['block_num']
         opData['operation_type'] = opType
-        opData['timestamp'] = datetime.strptime(block['timestamp'], '%Y-%m-%dT%H:%M:%S')
-        if txIndex and 'transaction_ids' in block:
-            opData['transaction_id'] = block['transaction_ids'][txIndex]
+        if not isinstance(block['timestamp'], datetime):
+            opData['timestamp'] = datetime.strptime(block['timestamp'], '%Y-%m-%dT%H:%M:%S')
+        opData['transaction_id'] = block['transaction_ids'][txIndex]
         return opData
 
     def get_block(self, block_num):
