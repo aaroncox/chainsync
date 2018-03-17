@@ -50,8 +50,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
 
     def get_block(self, block_num):
         response = HttpClient(self.endpoint).request('block_api.get_block', block_num=block_num)
-        if 'block_id' in response:
-            response['block_num'] = int(str(response['block_id'])[:8], base=16)
+        response['block_num'] = int(str(response['block_id'])[:8], base=16)
         return response['block']
 
     def get_ops_in_block(self, block_num, virtual_only=False):
