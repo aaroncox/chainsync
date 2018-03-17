@@ -32,16 +32,21 @@ class Blocksync():
         config = self.get_config()
         while True:
             status = self.get_status()
+
             # Determine the current head block
             head_block = status['head_block_number']
+
             # If set to irreversible, override the head block
             if mode == 'irreversible':
                 head_block = status['last_irreversible_block_num']
+
             # If no start block is specified, start streaming from head
             if start_block is None:
                 start_block = head_block
+
             # Set initial remaining blocks for this stream
             remaining = head_block - start_block
+
             # While remaining blocks exist - batch load them
             while remaining > 0:
                 # Determine how many blocks to load with this request
@@ -57,8 +62,8 @@ class Blocksync():
                     yield block
                 # Remaining blocks to process
                 remaining = head_block - start_block
-            # Pause loop for block time
 
+            # Pause loop based on the blockchain block time
             block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
             time.sleep(block_interval)
 
