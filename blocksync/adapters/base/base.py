@@ -58,7 +58,8 @@ class BaseAdapter():
             # Return the response
             return response
 
-        except:
+        except Exception as e:
+            print("exception: {}".format(e))
             # If we have remaining endpoints to try, attempt them
             if len(self.additional_endpoints) > 0:
                 # Get the unavailable_endpoint this failed on
