@@ -21,6 +21,12 @@ class Blocksync():
     def get_status(self):
         return self.adapter.call('get_status')
 
+    def get_ops_in_block(self, block_num, virtual_only=False):
+        return self.adapter.call('get_ops_in_block', block_num=block_num, virtual_only=virtual_only)
+
+    def get_ops_in_blocks(self, start_block, virtual_only=False, blocks=10):
+        return self.adapter.call('get_ops_in_blocks', start_block=start_block, virtual_only=virtual_only, blocks=blocks)
+
     # returns a stream of blocks
     def get_block_stream(self, start_block=None, mode='head', batch_size=10):
         config = self.get_config()
