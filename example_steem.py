@@ -20,10 +20,6 @@ blocks = blocksync.get_blocks(1000, 5)
 for block in blocks:
     print(block)
 
-print('\nStreaming block headers only')
-for block in blocksync.get_block_stream(headers_only=True):
-    print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))
-
 print('\nStreaming blocks, 100 at a time, from the irreversible height...')
 for block in blocksync.get_block_stream(batch_size=100, mode='irreversible'):
     print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))
