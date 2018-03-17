@@ -27,6 +27,11 @@ class AbstractAdapter(ABC):
     def get_ops_in_block(self, block_num):
         pass
 
+    @abstractmethod
+    def get_ops_in_blocks(self, start_block, virtual_only, blocks):
+        pass
+
+    @abstractmethod
     def get_config(self):
         pass
 
