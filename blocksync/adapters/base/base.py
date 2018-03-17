@@ -52,6 +52,8 @@ class BaseAdapter():
 
             # Execute the call against the loaded adapter
             response = getattr(self, method)(**kwargs)
+            if not response:
+                raise Exception("empty response from API")
 
             # Return the response
             return response
