@@ -63,9 +63,65 @@ class Blocksync():
             time.sleep(block_interval)
 
     # returns a stream of ops
-    def get_op_stream(self, start_block=None, mode='head', batch_size=10, whitelist=[]):
-        # Stream blocks using the parameters passed to the op stream
-        for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
+    def get_op_stream(self, start_block=None, mode='head', batch_size=10, virtual_ops=True, virtual_only=False, whitelist=[]):
+        config = self.get_config()
+
+        while True:
+            status = self.get_status()
+
+            # Determine the current head block
+            head_block = status['head_block_number']
+
+            # If set to irreversible, override the head block
+            if mode == 'irreversible':
+                head_block = status['last_irreversible_block_num']
+
+            # If no start block is specified, start streaming from head
+            if start_block is None:
+                start_block = head_block
+
+            # Set initial remaining blocks for this stream
+            remaining = head_block - start_block
+
+            # While remaining blocks exist - batch load them
+            while remaining > 0:
+                # Determine how many blocks to load with this request
+                blocks = batch_size
+
+                # Modify the amount of blocks to load if lower than the batch_size
+                if remaining < batch_size:
+                    blocks = remaining
+
+                #
+                if virtual_ops:
+                    # Iterate batch of blocks
+                    for response in self.get_ops_in_blocks(start_block, virtual_only=virtual_only, blocks=blocks):
+                        for op in self.get_ops_from_ops_in_block(response, whitelist=whitelist):
+                            # Update the height to start on the next unyielded block
+                            start_block = op['block_num'] + 1
+                            # Yield block data
+                            yield op
+                else:
+                    # Stream blocks using the parameters passed to the op stream
+                    for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
+                        for op in self.get_ops_from_block(block, virtual_ops=False, whitelist=whitelist):
+                            yield op
+
+                # Remaining blocks to process
+                remaining = head_block - start_block
+
+            # Pause loop based on the blockchain block time
+            block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
+            time.sleep(block_interval)
+
+
+    def get_ops_from_ops_in_block(self, data, whitelist=[]):
+        for op in data:
+            if not whitelist or op['op'][0] in whitelist:
+                yield self.adapter.vOpData(op)
+
+    def get_ops_from_block(self, block, virtual_ops=True, virtual_only=False, whitelist=[]):
+        if not virtual_only:
             # Loop through all transactions within this block
             for txIndex, tx in enumerate(block['transactions']):
                 # If a whitelist is defined, only allow whitelisted operations through
@@ -73,6 +129,14 @@ class Blocksync():
                 # Iterate and yield each op
                 for opType, opData in ops:
                     yield self.adapter.opData(block, opType, opData, txIndex=txIndex)
+
+        # Ensure virtual_ops should be queried, and if a whitelist exists, check to ensure we're looking for vops
+        if virtual_ops and (not whitelist or [i for i in whitelist if i in self.adapter.config['VIRTUAL_OPS']]):
+            # Retrieve and loop through all virtual operations within this block
+            for vop in self.get_ops_in_block(block['block_num'], True):
+                # If a whitelist is defined, only allow whitelisted operations through
+                if not whitelist or vop['op'][0] in whitelist:
+                    yield self.adapter.vOpData(vop)
 
     # returns a stream of blocks and ops, in a tuple of ('type', 'data')
     def get_blockop_stream(self, start_block=None, mode='head', batch_size=10, whitelist=[]):
