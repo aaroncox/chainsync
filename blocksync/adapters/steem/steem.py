@@ -9,7 +9,24 @@ from jsonrpcclient.request import Request
 class SteemAdapter(AbstractAdapter, BaseAdapter):
 
     config = {
-        'BLOCK_INTERVAL': 'STEEMIT_BLOCK_INTERVAL'
+        'BLOCK_INTERVAL': 'STEEMIT_BLOCK_INTERVAL',
+        'VIRTUAL_OPS': [
+            'fill_convert_request',
+            'author_reward',
+            'curation_reward',
+            'comment_reward',
+            'liquidity_reward',
+            'interest',
+            'fill_vesting_withdraw',
+            'fill_order',
+            'shutdown_witness',
+            'fill_transfer_from_savings',
+            'hardfork',
+            'comment_payout_update',
+            'return_vesting_delegation',
+            'comment_benefactor_reward',
+            'producer_reward',
+        ]
     }
 
     def opData(self, block, opType, opData, txIndex=False):
