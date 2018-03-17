@@ -24,6 +24,9 @@ class AbstractAdapter(ABC):
         pass
 
     @abstractmethod
+    def get_ops_in_block(self, block_num):
+        pass
+
     def get_config(self):
         pass
 
