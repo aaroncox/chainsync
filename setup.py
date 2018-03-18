@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='blocksync',
-      version='0.1.0',
+      version='0.1.1',
       description='Utility to stream and sync blocks into other data sources',
       url='http://github.com/aaroncox/blocksync',
       author='Aaron Cox',
