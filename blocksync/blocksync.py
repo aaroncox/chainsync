@@ -53,12 +53,12 @@ class Blocksync():
             # While remaining blocks exist - batch load them
             while remaining > 0:
                 # Determine how many blocks to load with this request
-                blocks = batch_size
+                limit = batch_size
                 # Modify the amount of blocks to load if lower than the batch_size
                 if remaining < batch_size:
-                    blocks = remaining
+                    limit = remaining
                 # Iterate batch of blocks
-                for block in self.get_block_sequence(start_block=start_block, blocks=blocks):
+                for block in self.get_block_sequence(start_block=start_block, limit=limit):
                     # Update the height to start on the next unyielded block
                     start_block = block['block_num'] + 1
                     # Yield block data
