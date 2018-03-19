@@ -15,8 +15,8 @@ blocks = blocksync.get_blocks(1000, 100)
 for block in blocks:
     print(block)
 
-print('\nStreaming blocks, 100 at a time, from the irreversible height...')
-for block in blocksync.get_block_stream(batch_size=100, mode='irreversible'):
+print('\nStreaming all blocks...')
+for block in blocksync.get_block_stream():
     print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))
 
 print('\nStreaming all ops...')
