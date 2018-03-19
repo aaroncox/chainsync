@@ -12,11 +12,23 @@ class AbstractAdapter(ABC):
         pass
 
     @abstractmethod
+    def vOpData(self, vop):
+        pass
+
+    @abstractmethod
     def get_block(self, height):
         pass
 
     @abstractmethod
     def get_blocks(self, start_block, limit):
+        pass
+
+    @abstractmethod
+    def get_ops_in_block(self, block_num):
+        pass
+
+    @abstractmethod
+    def get_ops_in_blocks(self, start_block, virtual_only, blocks):
         pass
 
     @abstractmethod

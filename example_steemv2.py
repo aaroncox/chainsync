@@ -1,8 +1,8 @@
 import datetime
 from blocksync import Blocksync
-from blocksync.adapters.steem import SteemAdapter
+from blocksync.adapters.steemv2 import SteemV2Adapter
 
-adapter = SteemAdapter(endpoints=['https://api.steemit.com'], debug=False)
+adapter = SteemV2Adapter(endpoints=['https://api.steemitstage.com/'])
 
 blocksync = Blocksync(adapter)
 
@@ -10,13 +10,13 @@ print('\nGetting block 1')
 block = blocksync.get_block(1)
 print(block)
 
-print('\nGetting blocks 1000-1005')
-blocks = blocksync.get_blocks(1000, 5)
+print('\nGetting blocks 1000-1100')
+blocks = blocksync.get_blocks(1000, 100)
 for block in blocks:
     print(block)
 
-print('\nStreaming blocks, 100 at a time, from the irreversible height...')
-for block in blocksync.get_block_stream(batch_size=100, mode='irreversible'):
+print('\nStreaming all blocks...')
+for block in blocksync.get_block_stream():
     print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))
 
 print('\nStreaming all ops...')

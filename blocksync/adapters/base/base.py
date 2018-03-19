@@ -15,6 +15,10 @@ class BaseAdapter():
         # print("debug: {}".format(self.debug))
         self.retry = retry
         # print("retry: {}".format(self.retry))
+        self.apis = set()
+        # print("apis: {}".format(self.apis))
+        self.api_methods = set()
+        # print("api_methods: {}".format(self.api_methods))
 
         # Disable the additional logging unless debug is active
         if not debug:
@@ -40,6 +44,18 @@ class BaseAdapter():
         # Remove the active endpoint from the additional_endpoints pool
         if self.endpoint in self.additional_endpoints:
             self.additional_endpoints.remove(self.endpoint)
+
+        # Determine endpoint capabilities
+        self.get_available_apis()
+
+    def get_available_apis(self):
+        available_methods = self.call('get_methods')
+        self.apis = set()
+        self.api_methods = set()
+        for call in available_methods:
+            api, method = call.split('.')
+            self.apis.add(api)
+            self.api_methods.add(method)
 
     def call(self, method, **kwargs):
         try:
@@ -72,6 +88,9 @@ class BaseAdapter():
                 if self.retry:
                     # Push the previously unavailable back to the end of the list
                     self.additional_endpoints.append(unavailable_endpoint)
+
+                # Determine endpoint capabilities
+                self.get_available_apis()
 
                 # Logging
                 # print("-------------")

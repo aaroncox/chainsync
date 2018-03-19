@@ -1,1 +1,1 @@
-from .steem import SteemAdapter
+from .steem import SteemV2Adapter
