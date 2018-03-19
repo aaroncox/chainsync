@@ -74,8 +74,8 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         for i in range(start_block, start_block + blocks):
             yield self.call('get_ops_in_block', block_num=i, virtual_only=virtual_only)
 
-    def get_blocks(self, start_block=1, blocks=10):
-        for i in range(start_block, start_block + blocks):
+    def get_blocks(self, blocks=[]):
+        for i in blocks:
             yield self.call('get_block', block_num=i)
 
     def get_config(self):

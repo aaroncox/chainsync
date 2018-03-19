@@ -12,8 +12,8 @@ class Blocksync():
     def get_block(self, block_num):
         return self.adapter.call('get_block', block_num=block_num)
 
-    def get_blocks(self, start_block, blocks=10):
-        return self.adapter.call('get_blocks', start_block=start_block, blocks=blocks)
+    def get_blocks(self, blocks=[]):
+        return self.adapter.call('get_blocks', blocks=blocks)
 
     def get_config(self):
         return self.adapter.call('get_config')

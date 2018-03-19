@@ -138,7 +138,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         # return the resulting ops
         return [r['result'] for r in response]
 
-    def get_blocks(self, start_block=1, blocks=10):
+    def get_blocks(self, blocks=[]):
         # block_api method
         api = 'block_api'
         method = 'get_block'
@@ -147,7 +147,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
             requests = [
                 Request('.'.join([api, method]), {
                     'block_num': i
-                }) for i in range(start_block, start_block + blocks)
+                }) for i in blocks
             ]
             # get response
             response = HttpClient(self.endpoint).send(requests)
