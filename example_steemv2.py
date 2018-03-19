@@ -11,7 +11,7 @@ block = blocksync.get_block(1)
 print(block)
 
 print('\nGetting blocks 1000-1005')
-blocks = blocksync.get_blocks(1000, 5)
+blocks = blocksync.get_blocks(1000, 100)
 for block in blocks:
     print(block)
 
