@@ -49,13 +49,18 @@ class BaseAdapter():
         self.get_available_apis()
 
     def get_available_apis(self):
+        # Get available methods from the current adapter
         available_methods = self.call('get_methods')
-        self.apis = set()
-        self.api_methods = set()
-        for call in available_methods:
-            api, method = call.split('.')
-            self.apis.add(api)
-            self.api_methods.add(method)
+        # If available methods is returned as false, assume everything is valid
+        if available_methods == 'NOT_SUPPORTED':
+            print("get_methods not supported")
+        else:
+            self.apis = set()
+            self.api_methods = set()
+            for call in available_methods:
+                api, method = call.split('.')
+                self.apis.add(api)
+                self.api_methods.add(method)
 
     def call(self, method, **kwargs):
         try:

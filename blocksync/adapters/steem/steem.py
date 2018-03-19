@@ -82,7 +82,7 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         return HttpClient(self.endpoint).request('get_config')
 
     def get_methods(self):
-        return []
+        return 'NOT_SUPPORTED'
 
     def get_status(self):
         return HttpClient(self.endpoint).request('get_dynamic_global_properties')
