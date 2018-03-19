@@ -15,6 +15,9 @@ class Blocksync():
     def get_blocks(self, blocks=[]):
         return self.adapter.call('get_blocks', blocks=blocks)
 
+    def get_block_sequence(self, start_block=1, limit=10):
+        return self.adapter.call('get_blocks', blocks=range(start_block, start_block + limit))
+
     def get_config(self):
         return self.adapter.call('get_config')
 
@@ -55,7 +58,7 @@ class Blocksync():
                 if remaining < batch_size:
                     blocks = remaining
                 # Iterate batch of blocks
-                for block in self.get_blocks(start_block, blocks=blocks):
+                for block in self.get_block_sequence(start_block=start_block, blocks=blocks):
                     # Update the height to start on the next unyielded block
                     start_block = block['block_num'] + 1
                     # Yield block data
