@@ -10,8 +10,13 @@ print('\nGetting block 1')
 block = blocksync.get_block(1)
 print(block)
 
+print('\nGetting blocks 1, 10, 50, 250, 500')
+blocks = blocksync.get_blocks([1, 10, 50, 250, 500])
+for block in blocks:
+    print(block)
+
 print('\nGetting blocks 1000-1005')
-blocks = blocksync.get_blocks(1000, 5)
+blocks = blocksync.get_block_sequence(1000, 5)
 for block in blocks:
     print(block)
 
