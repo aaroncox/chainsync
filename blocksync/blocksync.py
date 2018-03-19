@@ -121,9 +121,8 @@ class Blocksync():
 
 
     def get_ops_from_ops_in_block(self, data, whitelist=[]):
-        for op in data:
-            if not whitelist or op['op'][0] in whitelist:
-                yield self.adapter.vOpData(op)
+        for op in (op for op in data if not whitelist or op['op'][0] in whitelist):
+            yield self.adapter.vOpData(op)
 
     def get_ops_from_block(self, block, virtual_ops=True, virtual_only=False, whitelist=[]):
         if not virtual_only:
