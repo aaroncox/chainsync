@@ -72,9 +72,9 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
 
     def get_ops_in_block(self, block_num, virtual_only=False):
         if self.is_api_available('account_history_api', 'get_ops_in_block', raiseException=False):
-            return self.get_ops_in_block_from_account_history_api(start_block=start_block, virtual_only=virtual_only, blocks=blocks)
+            return self.get_ops_in_block_from_account_history_api(block_num=block_num, virtual_only=virtual_only)
         elif self.is_api_available('condenser_api', 'get_ops_in_block', raiseException=False):
-            return self.get_ops_in_block_from_condenser_api(start_block=start_block, virtual_only=virtual_only, blocks=blocks)
+            return self.get_ops_in_block_from_condenser_api(block_num=block_num, virtual_only=virtual_only)
         else:
             raise Exception('endpoint not capable of calling get_ops_in_block from either condenser_api or account_history_api')
 
