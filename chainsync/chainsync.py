@@ -110,23 +110,33 @@ class ChainSync():
                 if remaining < batch_size:
                     blocks = remaining
 
-                #
+                # Track the last block successfully processed
+                last_block_processed = start_block
+
                 if virtual_ops:
                     # Iterate batch of blocks
                     for response in self.get_ops_in_blocks(start_block, virtual_only=virtual_only, blocks=blocks):
                         for op in self.get_ops_from_ops_in_block(response, whitelist=whitelist):
-                            # Update the height to start on the next unyielded block
-                            start_block = op['block_num'] + 1
+
+                            last_block_processed = op['block_num']
                             # Yield block data
                             yield op
+
                 else:
                     # Stream blocks using the parameters passed to the op stream
                     for block in self.get_block_stream(start_block=start_block, mode=mode, batch_size=batch_size):
                         for op in self.get_ops_from_block(block, virtual_ops=False, whitelist=whitelist):
+                            last_block_processed = op['block_num']
                             yield op
 
                 # Remaining blocks to process
                 remaining = head_block - start_block
+
+                # Next block to start on
+                if remaining > batch_size:
+                    start_block = start_block + batch_size
+                else:
+                    start_block = last_block_processed + 1
 
             # Pause loop based on the blockchain block time
             block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
