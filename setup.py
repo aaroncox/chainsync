@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='chainsync',
-    version='0.1.6',
+    version='0.1.7',
     description='Utility to stream and sync blocks into other data sources',
     url='http://github.com/aaroncox/chainsync',
     author='Aaron Cox',
