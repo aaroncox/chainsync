@@ -3,4 +3,5 @@
 __pycache__
 dist
 *.egg-info
+build
 chainsync/adapters/steemv2test
