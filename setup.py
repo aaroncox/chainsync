@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='ChainSync',
-    version='0.1.5',
+    name='chainsync',
+    version='0.1.6',
     description='Utility to stream and sync blocks into other data sources',
     url='http://github.com/aaroncox/chainsync',
     author='Aaron Cox',
