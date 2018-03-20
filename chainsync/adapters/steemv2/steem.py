@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from blocksync.adapters.abstract import AbstractAdapter
-from blocksync.adapters.base import BaseAdapter
-from blocksync.utils.http_client import HttpClient
+from chainsync.adapters.abstract import AbstractAdapter
+from chainsync.adapters.base import BaseAdapter
+from chainsync.utils.http_client import HttpClient
 
 from jsonrpcclient.request import Request
 

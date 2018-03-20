@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='blocksync',
+    name='chainsync',
     version='0.1.2',
     description='Utility to stream and sync blocks into other data sources',
-    url='http://github.com/aaroncox/blocksync',
+    url='http://github.com/aaroncox/chainsync',
     author='Aaron Cox',
     author_email='aaron@greymass.com',
     license='MIT',

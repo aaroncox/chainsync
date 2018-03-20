@@ -3,4 +3,4 @@
 __pycache__
 dist
 *.egg-info
-blocksync/adapters/steemv2test
+chainsync/adapters/steemv2test

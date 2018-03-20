@@ -2,7 +2,7 @@ import logging
 import requests
 import time
 
-blocksync_defaults = {
+chainsync_defaults = {
     'endpoint': 'http://localhost:8090',
     'endpoints': ['http://localhost:8090'],
 }
@@ -29,14 +29,14 @@ class BaseAdapter():
 
         # Use endpoints or set defaults
         if isinstance(endpoints, list):
-            self.endpoint = endpoints[0] if endpoints else blocksync_defaults['endpoint']
-            self.endpoints = endpoints if endpoints else blocksync_defaults['endpoints']
+            self.endpoint = endpoints[0] if endpoints else chainsync_defaults['endpoint']
+            self.endpoints = endpoints if endpoints else chainsync_defaults['endpoints']
         elif isinstance(endpoints, str):
-            self.endpoint = endpoints if endpoints else blocksync_defaults['endpoint']
+            self.endpoint = endpoints if endpoints else chainsync_defaults['endpoint']
             self.endpoints = [self.endpoint]
         else:
-            self.endpoint = blocksync_defaults['endpoint']
-            self.endpoints = blocksync_defaults['endpoints']
+            self.endpoint = chainsync_defaults['endpoint']
+            self.endpoints = chainsync_defaults['endpoints']
 
         # Save a modifiable copy of the endpoints available
         self.additional_endpoints = self.endpoints[:]

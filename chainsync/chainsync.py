@@ -1,6 +1,6 @@
 import time
 
-class Blocksync():
+class ChainSync():
 
     def __init__(self, adapter, endpoints=['http://localhost:8090'], retry=True, debug=False):
         self.debug = debug
@@ -10,6 +10,16 @@ class Blocksync():
             raise Exception('adapter required: you must specify a adapter')
 
     def get_block(self, block_num):
+        """Get a list of usernames from all registered accounts.
+
+        Args:
+            after (str, int): Username to start with. If '', 0 or -1, it will start at beginning.
+            limit (int): How many results to return.
+
+        Returns:
+            list: List of usernames in requested chunk.
+
+        """
         return self.adapter.call('get_block', block_num=block_num)
 
     def get_blocks(self, blocks=[]):
