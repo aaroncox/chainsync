@@ -8,5 +8,5 @@ from chainsync.adapters.steem import * # noqa
 
 # pylint: disable=unused-import,unused-variable
 def test_import():
-    _ = ChainSync()
+    _ = ChainSync(adapter=SteemAdapter)
     _ = SteemAdapter()
