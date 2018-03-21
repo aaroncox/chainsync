@@ -10,16 +10,16 @@ class HttpClient(HTTPClient):
 
     def send(self, request, **kwargs):
         response = super(HttpClient, self).send(request, **kwargs)
-        if not response or 'error' in response:
-            print("response")
+        if 'error' in response:
+            print("response error")
             print(response)
             raise requests.RequestException()
         return response
 
     def request(self, method_name, *args, **kwargs):
         response = super(HttpClient, self).send(Request(method_name, *args, **kwargs))
-        if not response or 'error' in response:
-            print("response")
+        if 'error' in response:
+            print("response error")
             print(response)
             raise requests.RequestException()
         return response
