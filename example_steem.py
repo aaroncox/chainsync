@@ -1,9 +1,9 @@
 import datetime
+
 from chainsync import ChainSync
 from chainsync.adapters.steem import SteemAdapter
 
 adapter = SteemAdapter(endpoints=['https://api.steemit.com'], debug=False)
-
 chainsync = ChainSync(adapter)
 
 print('\nGetting block 1')
@@ -19,6 +19,14 @@ print('\nGetting blocks 1000-1005')
 blocks = chainsync.get_block_sequence(1000, 5)
 for block in blocks:
     print(block)
+
+print('\nGetting all ops in block 9284729...')
+for op in chainsync.get_ops_in_block(9284729):
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nGetting all ops in block 1000000, 5000000, and 2000000...')
+for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000]):
+	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
 
 print('\nStreaming blocks, 100 at a time, from the irreversible height...')
 for block in chainsync.get_block_stream(batch_size=100, mode='irreversible'):
@@ -85,7 +93,7 @@ for dataType, data in chainsync.get_blockop_stream(virtual_only=True):
         print("{} - tx: {} / ops: {}".format(dataHeader, txCount, opCount))
 
 print('\nStreaming all blocks + virtual ops (no normal ops), filtering only producer_reward...')
-for dataType, data in chainsync.get_blockop_stream(virtual_only=True, whitelist=['producer_reward']):
+for dataType, data in chainsync.get_blockop_stream(virtual_only=True, whitelist=['producer_reward', 'rawr']):
     dataHeader = "{}: {}".format(datetime.datetime.now(), dataType)
     if dataType == "op":
         print("{} {} {}".format(dataHeader, data['transaction_id'], data['operation_type']))
