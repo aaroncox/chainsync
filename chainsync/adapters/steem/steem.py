@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from chainsync.adapters.abstract import AbstractAdapter
 from chainsync.adapters.base import BaseAdapter
 from chainsync.utils.http_client import HttpClient
@@ -30,30 +28,20 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
     }
 
     def opData(self, block, opType, opData, txIndex=False):
-        # Ensure the format of the timestamp as a datetime
-        if not isinstance(block['timestamp'], datetime):
-            opData['timestamp'] = datetime.strptime(block['timestamp'], '%Y-%m-%dT%H:%M:%S')
-        else:
-            opData['timestamp'] = block['timestamp']
         # Add some useful context to the operation
         opData['block_num'] = block['block_num']
         opData['operation_type'] = opType
+        opData['timestamp'] = block['timestamp']
         opData['transaction_id'] = block['transaction_ids'][txIndex]
         return opData
 
     def vOpData(self, vop):
         # Extract the operation from the vop object format
         opType, opData = vop['op']
-
-        # Ensure the format of the timestamp as a datetime
-        if not isinstance(vop['timestamp'], datetime):
-            opData['timestamp'] = datetime.strptime(vop['timestamp'], '%Y-%m-%dT%H:%M:%S')
-        else:
-            opData['timestamp'] = vop['timestamp']
-
         # Add some useful context to the operation
         opData['block_num'] = vop['block']
         opData['operation_type'] = opType
+        opData['timestamp'] = vop['timestamp']
         opData['transaction_id'] = vop['trx_id']
         return opData
 
@@ -61,7 +49,6 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         response = HttpClient(self.endpoint).request('get_block', [block_num])
         try:
             response['block_num'] = int(str(response['block_id'])[:8], base=16)
-            response['timestamp'] = datetime.strptime(response['timestamp'], '%Y-%m-%dT%H:%M:%S')
         except KeyError as e:
             print(e)
             print(response)
