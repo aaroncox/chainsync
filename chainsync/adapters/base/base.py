@@ -9,6 +9,8 @@ chainsync_defaults = {
 
 class BaseAdapter():
 
+    debug = False
+
     def __init__(self, endpoints=['http://localhost:8090'], retry=True, debug=False):
 
         self.debug = debug
