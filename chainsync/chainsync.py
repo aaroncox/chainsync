@@ -171,12 +171,10 @@ class ChainSync():
                     yield self.adapter.opData(block, opType, opData, txIndex=txIndex)
 
         # Ensure virtual_ops should be queried, and if a whitelist exists, check to ensure we're looking for vops
-        if virtual_ops and (not whitelist or [i for i in whitelist if i in self.adapter.config['VIRTUAL_OPS']]):
+        if virtual_ops:
             # Retrieve and loop through all virtual operations within this block
-            for vop in self.get_ops_in_block(block['block_num'], True):
-                # If a whitelist is defined, only allow whitelisted operations through
-                if not whitelist or vop['op'][0] in whitelist:
-                    yield self.adapter.vOpData(vop)
+            for vop in self.get_ops_in_block(block['block_num'], True, whitelist=whitelist):
+                yield vop
 
     # returns a stream of blocks and ops, in a tuple of ('type', 'data')
     def get_blockop_stream(self, start_block=None, mode='head', batch_size=10, virtual_ops=True, virtual_only=False, whitelist=[]):
