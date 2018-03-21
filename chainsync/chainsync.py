@@ -43,13 +43,13 @@ class ChainSync():
             if not whitelist or vop['op'][0] in whitelist:
                 yield self.adapter.vOpData(vop)
 
-    def get_ops_in_blocks(self, blocks, virtual_only=False):
-        print(blocks)
+    def get_ops_in_blocks(self, blocks, virtual_only=False, whitelist=[]):
         if not isinstance(blocks, list):
             raise TypeError
         for data in self.adapter.call('get_ops_in_blocks', blocks=blocks, virtual_only=virtual_only):
             for vop in data:
-                yield self.adapter.vOpData(vop)
+                if not whitelist or vop['op'][0] in whitelist:
+                    yield self.adapter.vOpData(vop)
 
     def get_ops_in_block_sequence(self, start_block=1, limit=10, virtual_only=False):
         return self.adapter.call('get_ops_in_blocks', blocks=range(start_block, start_block + limit), virtual_only=virtual_only)
