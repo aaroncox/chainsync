@@ -57,13 +57,9 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
     def get_ops_in_block(self, block_num, virtual_only=False):
         return HttpClient(self.endpoint).request('get_ops_in_block', [block_num, virtual_only])
 
-    def get_ops_in_blocks(self, start_block=1, virtual_only=False, blocks=10):
-        for i in range(start_block, start_block + blocks):
-            yield self.call('get_ops_in_block', block_num=i, virtual_only=virtual_only)
-
-    def get_blocks(self, blocks=[]):
+    def get_ops_in_blocks(self, blocks, virtual_only=False):
         for i in blocks:
-            yield self.call('get_block', block_num=i)
+            yield self.call('get_ops_in_block', block_num=i, virtual_only=virtual_only)
 
     def get_config(self):
         return HttpClient(self.endpoint).request('get_config')

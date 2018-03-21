@@ -94,15 +94,15 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         ])
         return response
 
-    def get_ops_in_blocks(self, start_block=1, virtual_only=False, blocks=10):
+    def get_ops_in_blocks(self, blocks, virtual_only=False):
         if self.is_api_available('account_history_api', 'get_ops_in_block', raiseException=False):
-            return self.get_ops_in_blocks_from_account_history_api(start_block=start_block, virtual_only=virtual_only, blocks=blocks)
+            return self.get_ops_in_blocks_from_account_history_api(blocks=blocks, virtual_only=virtual_only)
         elif self.is_api_available('condenser_api', 'get_ops_in_block', raiseException=False):
-            return self.get_ops_in_blocks_from_condenser_api(start_block=start_block, virtual_only=virtual_only, blocks=blocks)
+            return self.get_ops_in_blocks_from_condenser_api(blocks=blocks, virtual_only=virtual_only)
         else:
             raise Exception('endpoint not capable of calling get_ops_in_block from either condenser_api or account_history_api')
 
-    def get_ops_in_blocks_from_account_history_api(self, start_block=1, virtual_only=False, blocks=10):
+    def get_ops_in_blocks_from_account_history_api(self, blocks, virtual_only=False):
         # account_history_api method
         api = 'account_history_api'
         method = 'get_ops_in_block'
@@ -111,14 +111,14 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
             Request('.'.join([api, method]), {
                 'block_num': i,
                 'only_virtual': virtual_only
-            }) for i in range(start_block, start_block + blocks)
+            }) for i in blocks
         ]
         # get response
         response = HttpClient(self.endpoint).send(requests)
         # return the resulting ops
         return [r['result']['ops'] for r in response]
 
-    def get_ops_in_blocks_from_condenser_api(self, start_block=1, virtual_only=False, blocks=10):
+    def get_ops_in_blocks_from_condenser_api(self, blocks, virtual_only=False):
         # condenser_api method
         api = 'condenser_api'
         method = 'get_ops_in_block'
@@ -127,7 +127,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
             Request('.'.join([api, method]), [
                 i,
                 virtual_only
-            ]) for i in range(start_block, start_block + blocks)
+            ]) for i in blocks
         ]
         # get response
         response = HttpClient(self.endpoint).send(requests)

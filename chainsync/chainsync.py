@@ -38,11 +38,21 @@ class ChainSync():
     def get_status(self):
         return self.adapter.call('get_status')
 
-    def get_ops_in_block(self, block_num, virtual_only=False):
-        return self.adapter.call('get_ops_in_block', block_num=block_num, virtual_only=virtual_only)
+    def get_ops_in_block(self, block_num, virtual_only=False, whitelist=[]):
+        for vop in self.adapter.call('get_ops_in_block', block_num=block_num, virtual_only=virtual_only):
+            if not whitelist or vop['op'][0] in whitelist:
+                yield self.adapter.vOpData(vop)
 
-    def get_ops_in_blocks(self, start_block, virtual_only=False, blocks=10):
-        return self.adapter.call('get_ops_in_blocks', start_block=start_block, virtual_only=virtual_only, blocks=blocks)
+    def get_ops_in_blocks(self, blocks, virtual_only=False):
+        print(blocks)
+        if not isinstance(blocks, list):
+            raise TypeError
+        for data in self.adapter.call('get_ops_in_blocks', blocks=blocks, virtual_only=virtual_only):
+            for vop in data:
+                yield self.adapter.vOpData(vop)
+
+    def get_ops_in_block_sequence(self, start_block=1, limit=10, virtual_only=False):
+        return self.adapter.call('get_ops_in_blocks', blocks=range(start_block, start_block + limit), virtual_only=virtual_only)
 
     # returns a stream of blocks
     def get_block_stream(self, start_block=None, mode='head', batch_size=10):
@@ -108,20 +118,19 @@ class ChainSync():
             # While remaining blocks exist - batch load them
             while remaining > 0:
                 # Determine how many blocks to load with this request
-                blocks = batch_size
+                limit = batch_size
 
                 # Modify the amount of blocks to load if lower than the batch_size
                 if remaining < batch_size:
-                    blocks = remaining
+                    limit = remaining
 
                 # Track the last block successfully processed
                 last_block_processed = start_block
 
                 if virtual_ops:
                     # Iterate batch of blocks
-                    for response in self.get_ops_in_blocks(start_block, virtual_only=virtual_only, blocks=blocks):
+                    for response in self.get_ops_in_block_sequence(start_block, limit=limit, virtual_only=virtual_only):
                         for op in self.get_ops_from_ops_in_block(response, whitelist=whitelist):
-
                             last_block_processed = op['block_num']
                             # Yield block data
                             yield op
