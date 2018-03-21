@@ -24,7 +24,9 @@ class ChainSync():
         """
         return self.adapter.call('get_block', block_num=block_num)
 
-    def get_blocks(self, blocks=[]):
+    def get_blocks(self, blocks):
+        if not isinstance(blocks, list):
+            raise TypeError
         return self.adapter.call('get_blocks', blocks=blocks)
 
     def get_block_sequence(self, start_block=1, limit=10):
