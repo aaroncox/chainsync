@@ -5,6 +5,8 @@ class ChainSync():
     def __init__(self, adapter, endpoints=['http://localhost:8090'], retry=True, debug=False):
         self.debug = debug
         if adapter:
+            if debug:
+                adapter.debug = debug
             self.adapter = adapter
         else:
             raise Exception('adapter required: you must specify a adapter')
