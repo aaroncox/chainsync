@@ -24,8 +24,16 @@ print('\nGetting all ops in block 9284729...')
 for op in chainsync.get_ops_in_block(9284729):
     print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
 
+print('\nGetting withdraw_vesting ops in block 9284729...')
+for op in chainsync.get_ops_in_block(9284729, whitelist=['withdraw_vesting']):
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
 print('\nGetting all ops in block 1000000, 5000000, and 2000000...')
 for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000]):
+	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nGetting producer_reward ops in block 1000000, 5000000, and 2000000...')
+for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000], whitelist=['producer_reward']):
 	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
 
 print('\nStreaming blocks, 100 at a time, from the irreversible height...')

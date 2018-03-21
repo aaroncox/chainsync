@@ -24,3 +24,10 @@ class ChainSyncGetOpsInBlocksTestCase(ChainSyncBaseTestCase):
         results = self.chainsync.get_ops_in_blocks(blocks)
         for idx, result in enumerate(results):
             self.assertTrue(result['block_num'] in blocks_as_int)
+
+    def test_get_ops_in_blocks_filtered(self):
+        blocks = [10000000, 11000000]
+        whitelist = ['producer_reward']
+        results = self.chainsync.get_ops_in_blocks(blocks, whitelist=whitelist)
+        for idx, result in enumerate(results):
+            self.assertTrue(result['operation_type'] in whitelist)
