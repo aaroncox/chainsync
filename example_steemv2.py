@@ -6,59 +6,59 @@ from chainsync.adapters.steemv2 import SteemV2Adapter
 adapter = SteemV2Adapter(endpoints=['https://api.steemitstage.com/'])
 chainsync = ChainSync(adapter)
 
-# print('\nGetting block 1')
-# block = chainsync.get_block(1)
-# print(block)
-#
-# print('\nGetting blocks 1, 10, 50, 250, 500')
-# blocks = chainsync.get_blocks([1, 10, 50, 250, 500])
-# for block in blocks:
-#     print(block)
-#
-# print('\nGetting blocks 1000-1005')
-# blocks = chainsync.get_block_sequence(1000, 5)
-# for block in blocks:
-#     print(block)
-#
-# print('\nGetting all ops in block 9284729...')
-# for op in chainsync.get_ops_in_block(9284729):
-#     print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
-#
-# print('\nGetting withdraw_vesting ops in block 9284729...')
-# for op in chainsync.get_ops_in_block(9284729, whitelist=['withdraw_vesting']):
-#     print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
-#
-# print('\nGetting all ops in block 1000000, 5000000, and 2000000...')
-# for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000]):
-# 	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
-#
-# print('\nGetting producer_reward ops in block 1000000, 5000000, and 2000000...')
-# for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000], whitelist=['producer_reward']):
-# 	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
-#
-# print('\nStreaming blocks, 100 at a time, from the irreversible height...')
-# for dataType, block in chainsync.stream(['blocks'], batch_size=100, mode='irreversible'):
-#     print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))
-#
-# print('\nStreaming all ops...')
-# for dataType, op in chainsync.stream(['ops']):
-#     print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
-#
-# print('\nStreaming all non-virtual ops...')
-# for dataType, op in chainsync.stream(['ops'], virtual_ops=False):
-#     print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
-#
-# print('\nStreaming all virtual ops...')
-# for dataType, op in chainsync.stream(['ops'], regular_ops=False):
-#     print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
-#
-# print('\nStreaming vote ops only...')
-# for dataType, op in chainsync.stream(['ops'], whitelist=['vote']):
-#     print("{}: {} - {} by {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['voter']))
-#
-# print('\nStreaming producer_reward virtual ops only...')
-# for dataType, op in chainsync.stream(['ops'], whitelist=['producer_reward']):
-#     print("{}: {} - {} for {} of {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['producer'], op['vesting_shares']))
+print('\nGetting block 1')
+block = chainsync.get_block(1)
+print(block)
+
+print('\nGetting blocks 1, 10, 50, 250, 500')
+blocks = chainsync.get_blocks([1, 10, 50, 250, 500])
+for block in blocks:
+    print(block)
+
+print('\nGetting blocks 1000-1005')
+blocks = chainsync.get_block_sequence(1000, 5)
+for block in blocks:
+    print(block)
+
+print('\nGetting all ops in block 9284729...')
+for op in chainsync.get_ops_in_block(9284729):
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nGetting withdraw_vesting ops in block 9284729...')
+for op in chainsync.get_ops_in_block(9284729, whitelist=['withdraw_vesting']):
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nGetting all ops in block 1000000, 5000000, and 2000000...')
+for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000]):
+	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nGetting producer_reward ops in block 1000000, 5000000, and 2000000...')
+for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000], whitelist=['producer_reward']):
+	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nStreaming blocks, 100 at a time, from the irreversible height...')
+for dataType, block in chainsync.stream(['blocks'], batch_size=100, mode='irreversible'):
+    print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))
+
+print('\nStreaming all ops...')
+for dataType, op in chainsync.stream(['ops']):
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nStreaming all non-virtual ops...')
+for dataType, op in chainsync.stream(['ops'], virtual_ops=False):
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nStreaming all virtual ops...')
+for dataType, op in chainsync.stream(['ops'], regular_ops=False):
+    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+
+print('\nStreaming vote ops only...')
+for dataType, op in chainsync.stream(['ops'], whitelist=['vote']):
+    print("{}: {} - {} by {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['voter']))
+
+print('\nStreaming producer_reward virtual ops only...')
+for dataType, op in chainsync.stream(['ops'], whitelist=['producer_reward']):
+    print("{}: {} - {} for {} of {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['producer'], op['vesting_shares']))
 
 print('\nStreaming all blocks + ops + virtual ops + accurate counts of ops per block...')
 for dataType, data in chainsync.stream(['blocks', 'ops', 'ops_per_block']):
