@@ -1,5 +1,7 @@
 ## ChainSync
 
+[![PyPI](https://img.shields.io/pypi/v/chainsync.svg)](https://github.com/aaroncox/chainsync)
+[![GitHub issues](https://img.shields.io/github/issues/aaroncox/chainsync.svg)](https://github.com/aaroncox/chainsync/issues)
 [![Build Status](https://travis-ci.org/aaroncox/chainsync.svg?branch=master)](https://travis-ci.org/aaroncox/chainsync)
 
 A simple library to stream blocks and operations for digesting into other mediums.
