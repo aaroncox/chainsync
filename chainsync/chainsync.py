@@ -58,6 +58,26 @@ class ChainSync():
     def get_ops_in_block_sequence(self, start_block=1, limit=10, virtual_only=False, whitelist=[]):
         yield from self.get_ops_in_blocks(list(range(start_block, start_block + limit)), virtual_only=virtual_only, whitelist=whitelist)
 
+    def get_transaction(self, transaction_id):
+        if not isinstance(transaction_id, str):
+            raise TypeError
+        return self.adapter.call('get_transaction', transaction_id=transaction_id)
+
+    def get_transactions(self, transaction_ids):
+        if not isinstance(transaction_ids, list):
+            raise TypeError
+        yield from self.adapter.call('get_transactions', transaction_ids=transaction_ids)
+
+    def get_ops_in_transaction(self, transaction_id):
+        if not isinstance(transaction_id, str):
+            raise TypeError
+        return self.adapter.call('get_ops_in_transaction', transaction_id=transaction_id)
+
+    def get_ops_in_transactions(self, transaction_ids):
+        if not isinstance(transaction_ids, list):
+            raise TypeError
+        yield from self.adapter.call('get_ops_in_transactions', transaction_ids=transaction_ids)
+
     def from_block_get_ops(self, block, virtual_ops=False, regular_ops=True, whitelist=[]):
         # ensure regular_ops should be yielded
         if regular_ops:

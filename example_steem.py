@@ -10,6 +10,32 @@ print('\nGetting block 1')
 block = chainsync.get_block(1)
 print(block)
 
+print('\nGetting transaction c68435a34a7afc701771eb090f96526ed4c2a37b')
+tx = chainsync.get_transaction('c68435a34a7afc701771eb090f96526ed4c2a37b')
+print(tx)
+
+print('\nGetting multiple transactions')
+transactions = [
+    '62f68c45f67ecbe4ac6eb8348bce44e73e46611c',
+    '2f58f00e70b8d0f88e90350043e17ed6ea2eb223',
+    'c68435a34a7afc701771eb090f96526ed4c2a37b',
+]
+for tx in chainsync.get_transactions(transactions):
+    print(tx)
+
+print('\nGetting ops in transaction c68435a34a7afc701771eb090f96526ed4c2a37b')
+for op in chainsync.get_ops_in_transaction('c68435a34a7afc701771eb090f96526ed4c2a37b'):
+    print(op)
+
+print('\nGetting ops in multiple transactions')
+transactions = [
+    '62f68c45f67ecbe4ac6eb8348bce44e73e46611c',
+    '2f58f00e70b8d0f88e90350043e17ed6ea2eb223',
+    'c68435a34a7afc701771eb090f96526ed4c2a37b',
+]
+for op in chainsync.get_ops_in_transactions(transactions):
+    print(op)
+
 print('\nGetting blocks 1, 10, 50, 250, 500')
 blocks = chainsync.get_blocks([1, 10, 50, 250, 500])
 for block in blocks:

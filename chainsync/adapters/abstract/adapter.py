@@ -10,26 +10,15 @@ class AbstractAdapter(ABC):
         pass
 
     @abstractmethod
-    def opData(self, block, opType, opData, txIndex):
-        """ decorate the operation data with details from the block
-
-            :param dict block: the block this operation was contained within
-            :param string opType: the type of operation
-            :param dict opData: the operation as returned by the blockchain
-            :param int txIndex: the position of the operation in the transaction
-                    for lookup against the block data
-        """
+    def get_config(self):
         pass
 
     @abstractmethod
-    def vOpData(self, vop):
-        """ returns a formatted virtual op
+    def get_methods(self):
+        pass
 
-            decorate the virtual operation data to match the format of a
-            basic operation (most data exists, just arranged differently)
-
-            :return:
-        """
+    @abstractmethod
+    def get_status(self):
         pass
 
     @abstractmethod
@@ -57,13 +46,40 @@ class AbstractAdapter(ABC):
         pass
 
     @abstractmethod
-    def get_config(self):
+    def get_transaction(self, transaction_id=1):
         pass
 
     @abstractmethod
-    def get_methods(self):
+    def get_transactions(self, transaction_ids=[]):
         pass
 
     @abstractmethod
-    def get_status(self):
+    def get_ops_in_transaction(self, transaction_id=1):
+        pass
+
+    @abstractmethod
+    def get_ops_in_transactions(self, transaction_ids=[]):
+        pass
+
+    @abstractmethod
+    def opData(self, block, opType, opData, txIndex):
+        """ decorate the operation data with details from the block
+
+            :param dict block: the block this operation was contained within
+            :param string opType: the type of operation
+            :param dict opData: the operation as returned by the blockchain
+            :param int txIndex: the position of the operation in the transaction
+                    for lookup against the block data
+        """
+        pass
+
+    @abstractmethod
+    def vOpData(self, vop):
+        """ returns a formatted virtual op
+
+            decorate the virtual operation data to match the format of a
+            basic operation (most data exists, just arranged differently)
+
+            :return:
+        """
         pass
