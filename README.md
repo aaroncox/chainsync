@@ -22,7 +22,7 @@ from chainsync.adapters.steem import SteemAdapter
 adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
-for block in chainsync.get_block_stream(start_block=20512349, batch_size=100):
+for block in chainsync.stream(['blocks']):
     print("{} - {}".format(block['block_num'], block['witness']))
 ```
 
@@ -35,7 +35,7 @@ from chainsync.adapters.steem import SteemAdapter
 adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
-for op in chainsync.get_op_stream():
+for op in chainsync.stream(['ops']):
     print("{} - {}".format(op['block_num'], op['operation_type']))
 ```
 
@@ -48,7 +48,7 @@ from chainsync.adapters.steem import SteemAdapter
 adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
-for op in chainsync.get_op_stream(whitelist=['vote']):
+for block in chainsync.stream(['blocks'], whitelist=['vote']):
     print("{} - {} by {}".format(op['block_num'], op['operation_type'], op['voter']))
 ```
 
@@ -63,7 +63,7 @@ from chainsync.adapters.decent import DecentAdapter
 adapter = DecentAdapter(endpoints=['http://api.decent-db.com:8090'])
 chainsync = ChainSync(adapter)
 
-for block in chainsync.get_block_stream(start_block=20512349, batch_size=100):
+for block in chainsync.stream(['blocks']):
     print("{} - {}".format(block['block_num'], block['witness']))
 ```
 
