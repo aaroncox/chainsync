@@ -1,5 +1,7 @@
 ## ChainSync
 
+[![Build Status](https://travis-ci.org/aaroncox/chainsync.svg?branch=master)](https://travis-ci.org/aaroncox/chainsync)
+
 A simple library to stream blocks and operations for digesting into other mediums.
 
 ### Install
