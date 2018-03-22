@@ -68,7 +68,8 @@ class BaseAdapter():
         try:
             # Logging
             # print("\n")
-            print("call: {} ({})".format(method, kwargs))
+            if self.debug:
+                print("call: {} ({})".format(method, kwargs))
             # print("endpoint: {}".format(self.endpoint))
             # print("endpoints: {}".format(self.endpoints))
             # print("additional_endpoints: {}".format(self.additional_endpoints))
