@@ -169,3 +169,22 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         method = 'get_dynamic_global_properties'
         if self.is_api_available(api, method):
             return HttpClient(self.endpoint).request('.'.join([api, method]))
+
+    def get_transaction(self, transaction_id=1):
+        response = HttpClient(self.endpoint).request('condenser_api.get_transaction', [transaction_id])
+        # try:
+        #     response['block_num'] = int(str(response['block_id'])[:8], base=16)
+        # except KeyError as e:
+        #     print(e)
+        #     print(response)
+        print(response)
+        # return self.call('get_transaction', transaction_id=transaction_id)
+
+    def get_transactions(self, transaction_ids=[]):
+        pass
+
+    def get_ops_in_transaction(self, transaction_id=1):
+        pass
+
+    def get_ops_in_transactions(self, transaction_ids=[]):
+        pass
