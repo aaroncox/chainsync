@@ -141,6 +141,8 @@ class ChainSync():
         if not config:
             config = self.get_config()
 
+        last_block_processed = start_block - 1
+
         # While remaining blocks exist - batch load them
         while end_block - start_block > 0:
 
