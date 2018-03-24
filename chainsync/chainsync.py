@@ -94,7 +94,7 @@ class ChainSync():
             # query and yield all virtual operations within this block
             yield from self.get_ops_in_block(block['block_num'], True, whitelist=whitelist)
 
-    def stream(self, what=['ops', 'blocks', 'ops_per_block'], start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
+    def stream(self, what=['ops', 'blocks', 'ops_per_blocks'], start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
 
         config = self.get_config()
 
@@ -136,7 +136,7 @@ class ChainSync():
             block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
             time.sleep(block_interval)
 
-    def get_stream(self, what=['ops', 'blocks', 'ops_per_block'], config=None, start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
+    def get_stream(self, what=['ops', 'blocks', 'ops_per_blocks'], config=None, start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
 
         if not config:
             config = self.get_config()
@@ -150,7 +150,7 @@ class ChainSync():
             limit = end_block - start_block if (end_block - start_block) < batch_size else batch_size
 
             # Track how many operations are in each block
-            ops_per_block = []
+            ops_per_blocks = []
 
             if 'blocks' in what:
                 for block in self.get_block_sequence(start_block, limit=limit):
@@ -158,26 +158,26 @@ class ChainSync():
                     yield ('block', block)
                     if 'ops' in what:
                         for op in self.from_block_get_ops(block, virtual_ops=virtual_ops, regular_ops=regular_ops, whitelist=whitelist):
-                            ops_per_block.append(op['block_num'])
+                            ops_per_blocks.append(op['block_num'])
                             yield ('op', op)
 
             elif 'ops' in what:
                 if virtual_ops or (regular_ops and virtual_ops):
                     for op in self.get_ops_in_block_sequence(start_block, limit=limit, virtual_only=not regular_ops, whitelist=whitelist):
                         last_block_processed = op['block_num']
-                        ops_per_block.append(op['block_num'])
+                        ops_per_blocks.append(op['block_num'])
                         yield ('op', op)
 
                 elif regular_ops:
                     for block in self.get_block_sequence(start_block, limit=limit):
                         last_block_processed = block['block_num']
                         for op in self.from_block_get_ops(block, virtual_ops=virtual_ops, regular_ops=regular_ops, whitelist=whitelist):
-                            ops_per_block.append(op['block_num'])
+                            ops_per_blocks.append(op['block_num'])
                             yield ('op', op)
 
 
-            if 'ops_per_block' in what:
-                yield ('ops_per_block', Counter(ops_per_block))
+            if 'ops_per_blocks' in what:
+                yield ('ops_per_block', Counter(ops_per_blocks))
 
             # else start on the next block
             start_block = last_block_processed + 1

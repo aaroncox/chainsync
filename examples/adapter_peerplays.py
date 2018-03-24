@@ -44,7 +44,7 @@ for dataType, op in chainsync.stream(['ops']):
     print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
 
 print('\nStreaming all blocks + ops + virtual ops + accurate counts of ops per block...')
-for dataType, data in chainsync.stream(['blocks', 'ops', 'ops_per_block'], start_block=1045177):
+for dataType, data in chainsync.stream(['blocks', 'ops', 'ops_per_blocks'], start_block=1045177):
     dataHeader = "{} #{}: {}".format(datetime.datetime.now(), data['block_num'], dataType)
     if dataType == "op":
         print("{} {}".format(dataHeader, data['operation_type']))
@@ -52,6 +52,6 @@ for dataType, data in chainsync.stream(['blocks', 'ops', 'ops_per_block'], start
         txCount = len(data['transactions'])
         opCount = sum([len(tx['operations']) for tx in data['transactions']])
         print("{} - #{} - tx: {} / ops: {}".format(dataHeader, data['block_num'], txCount, opCount))
-    if dataType == "ops_per_block":
+    if dataType == "ops_per_blocks":
         for height in data:
             print("{} - #{}: {}".format(dataHeader, height, data[height]))
