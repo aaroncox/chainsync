@@ -18,7 +18,7 @@ extras = {
 
 setup(
     name='chainsync',
-    version='0.3.2',
+    version='0.3.3',
     description='Utility to stream and sync blocks into other data sources',
     url='http://github.com/aaroncox/chainsync',
     author='Aaron Cox',
