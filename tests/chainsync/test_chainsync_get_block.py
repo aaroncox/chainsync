@@ -1,5 +1,6 @@
 from test_base import ChainSyncBaseTestCase
 
+
 class ChainSyncGetBlockTestCase(ChainSyncBaseTestCase):
 
     def test_get_block(self):
