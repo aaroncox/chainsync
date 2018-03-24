@@ -141,13 +141,17 @@ class ChainSync():
         if not config:
             config = self.get_config()
 
-        last_block_processed = start_block - 1
+        if not end_block:
+            end_block = start_block
+
+        last_block_processed = start_block
 
         # While remaining blocks exist - batch load them
-        while end_block - start_block > 0:
+        while start_block <= end_block:
+            last_block_processed = start_block
 
             # Determine how many blocks to load with this request
-            limit = end_block - start_block if (end_block - start_block) < batch_size else batch_size
+            limit = end_block - start_block + 1 if (end_block - start_block + 1) < batch_size else batch_size
 
             # Track how many operations are in each block
             ops_per_blocks = []
