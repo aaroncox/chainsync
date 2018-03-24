@@ -8,8 +8,5 @@ python:
   - "3.7-dev"  # 3.7 development branch
 install:
   - pip install .[test]
-  - pip install python-coveralls
 script:
-  - pytest
-after_success:
-  - coveralls
+  - pytest -k "not transaction" # don't test transaction methods - not supported on many APIs
