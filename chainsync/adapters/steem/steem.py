@@ -43,6 +43,7 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         opData['operation_type'] = opType
         opData['timestamp'] = vop['timestamp']
         opData['transaction_id'] = vop['trx_id']
+        opData['op_idx'] = vop['op_in_trx']
         return opData
 
     def get_block(self, block_num):
