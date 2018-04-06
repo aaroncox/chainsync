@@ -18,7 +18,7 @@ class ChainSync():
     def get_status(self):
         return self.adapter.call('get_status')
 
-    def get_head_block(self, mode='head'):
+    def get_head_block(self, mode='head', status=False):
         # get status from the blockchain
         status = self.get_status()
 
@@ -28,6 +28,10 @@ class ChainSync():
         # If set to irreversible, override the head block
         if mode == 'irreversible':
             head_block = status[self.adapter.config['LAST_IRREVERSIBLE_BLOCK_NUM']]
+
+        # A flag to return status alongside the block number
+        if status:
+            return (head_block, status)
 
         return head_block
 
