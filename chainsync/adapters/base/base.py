@@ -93,7 +93,6 @@ class BaseAdapter():
             return response
 
         except Exception as e:
-            print("exception: {}".format(e))
             # If we have remaining endpoints to try, attempt them
             if len(self.additional_endpoints) > 0:
                 # Get the unavailable_endpoint this failed on
@@ -112,12 +111,12 @@ class BaseAdapter():
 
                 # Logging
                 # print("-------------")
-                print("connection error: call failed on {}, swapping to {}...".format(unavailable_endpoint, self.endpoint))
+                print("rpcerror: '{}' on {}, swapping to {}...".format(e, unavailable_endpoint, self.endpoint))
                 # print("called: {}".format(method))
                 # print("kawrgs: {}".format(kwargs))
                 # print("-------------")
 
-                time.sleep(1)
+                time.sleep(0.5)
 
                 # Retry the call with the new endpoint
                 return self.call(method, **kwargs)
@@ -125,7 +124,7 @@ class BaseAdapter():
             # If no endpoints are reachable, and retry enabled, try again
             elif self.retry:
                 # print("-------------")
-                print("connection error: no endpoints responding, retrying in 10 seconds.")
+                print("rpcerror: '{}' (retrying in 3 seconds)".format(e))
                 # print("endpoint: {}".format(self.endpoint))
                 # print("endpoints: {}".format(self.endpoints))
                 # print("additional: {}".format(self.additional_endpoints))
@@ -133,7 +132,7 @@ class BaseAdapter():
                 # print("kawrgs: {}".format(kwargs))
                 # print("-------------")
 
-                time.sleep(10)
+                time.sleep(3)
 
                 # Try again
                 return self.call(method, **kwargs)
@@ -145,4 +144,4 @@ class BaseAdapter():
                 # print("kawrgs: {}".format(kwargs))
                 # print("-------------")
 
-                raise Exception("connection error: no available endpoints and not retrying")
+                raise Exception("rpcerror: '{}' (not retrying)".format(e))
