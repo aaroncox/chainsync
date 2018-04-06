@@ -88,18 +88,6 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
     def get_transactions(self, transaction_ids=[]):
         for transaction_id in transaction_ids:
             yield self.call('get_transaction', transaction_id=transaction_id)
-
-    def get_ops_in_transaction(self, transaction_id=1):
-        tx = self.call('get_transaction', transaction_id=transaction_id)
-        for op in tx['operations']:
-            op[1]['block_num'] = tx['block_num']
-            yield op
-
-    def get_ops_in_transactions(self, transaction_ids=[]):
-        for transaction_id in transaction_ids:
-            for op in self.call('get_ops_in_transaction', transaction_id=transaction_id):
-                yield op
-
     def get_config(self):
         return HttpClient(self.endpoint).request('get_config')
 

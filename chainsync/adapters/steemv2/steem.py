@@ -192,9 +192,3 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
 
     def get_transactions(self, transaction_ids=[]):
         pass
-
-    def get_ops_in_transaction(self, transaction_id=1):
-        pass
-
-    def get_ops_in_transactions(self, transaction_ids=[]):
-        pass
