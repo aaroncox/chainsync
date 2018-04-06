@@ -112,7 +112,7 @@ class ChainSync():
 
         config = self.get_config()
         if 'config' in what:
-            yield ('config', config)
+            yield self.yield_event('config', config)
 
         yield from self.stream_from_rpc(
             what=what,
@@ -140,7 +140,7 @@ class ChainSync():
 
             # Yield event if the 'status' parameter is set
             if 'status' in what:
-                yield ('status', status)
+                yield self.yield_event('status', status)
 
             # If no start block is specified, start streaming from head
             if start_block is None:
@@ -189,12 +189,15 @@ class ChainSync():
             # Otherwise add the throttle delay (defaults to 1 second) delay to avoid thrashing the API
             return throttle
 
+    def yield_event(self, what, data):
+        return (what, data)
+
     def get_stream(self, what=['blocks', 'config', 'status', 'ops', 'ops_per_blocks'], config=None, start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
 
         if not config:
             config = self.get_config()
             if 'config' in what:
-                yield ('config', config)
+                yield self.yield_event('config', config)
 
         # If no end_block is specified, assume a single iteration starting at start_block and ending at start_block + batch_size
         if not end_block:
@@ -217,7 +220,7 @@ class ChainSync():
             if 'blocks' in what:
                 for block in self.get_block_sequence(start_block, limit=limit):
                     # Yield the block
-                    yield ('block', block)
+                    yield self.yield_event('block', block)
 
                     # Set this as the last block processed
                     last_block_processed = block['block_num']
@@ -229,7 +232,7 @@ class ChainSync():
                             if 'ops_per_blocks' in what:
                                 ops_per_blocks.append(op['block_num'])
                             # Yield the operation
-                            yield ('op', op)
+                            yield self.yield_event('op', op)
 
             # If not streaming blocks, but streaming either 'ops' or 'ops_per_blocks'
             elif 'ops' or 'ops_per_blocks' in what:
@@ -243,7 +246,7 @@ class ChainSync():
                             ops_per_blocks.append(op['block_num'])
                         # Yield the operation if 'ops' is requested
                         if 'ops' in what:
-                            yield ('op', op)
+                            yield self.yield_event('op', op)
 
                 # If only regular ops are needed
                 elif regular_ops:
@@ -257,11 +260,11 @@ class ChainSync():
 
                             # Yield the operation if 'ops' is requested
                             if 'ops' in what:
-                                yield ('op', op)
+                                yield self.yield_event('op', op)
 
             # If 'ops_per_blocks' are requested, yield the Counter generated
             if 'ops_per_blocks' in what:
-                yield ('ops_per_block', Counter(ops_per_blocks))
+                yield self.yield_event('ops_per_block', Counter(ops_per_blocks))
 
             # Determine the next block to start on
             start_block = last_block_processed + 1
