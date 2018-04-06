@@ -70,12 +70,21 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         for i in blocks:
             yield self.call('get_block', block_num=int(i))
 
+    def get_config(self):
+        return HttpClient(self.endpoint).request('get_config')
+
+    def get_methods(self):
+        return 'NOT_SUPPORTED'
+
     def get_ops_in_block(self, block_num, virtual_only=False):
         return HttpClient(self.endpoint).request('get_ops_in_block', [block_num, virtual_only])
 
     def get_ops_in_blocks(self, blocks, virtual_only=False):
         for i in blocks:
             yield self.call('get_ops_in_block', block_num=i, virtual_only=virtual_only)
+
+    def get_status(self):
+        return HttpClient(self.endpoint).request('get_dynamic_global_properties')
 
     def get_transaction(self, transaction_id=1):
         response = HttpClient(self.endpoint).request('get_transaction', [transaction_id])
@@ -88,11 +97,3 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
     def get_transactions(self, transaction_ids=[]):
         for transaction_id in transaction_ids:
             yield self.call('get_transaction', transaction_id=transaction_id)
-    def get_config(self):
-        return HttpClient(self.endpoint).request('get_config')
-
-    def get_methods(self):
-        return 'NOT_SUPPORTED'
-
-    def get_status(self):
-        return HttpClient(self.endpoint).request('get_dynamic_global_properties')

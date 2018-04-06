@@ -76,6 +76,35 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
             response['block']['block_num'] = int(str(response['block']['block_id'])[:8], base=16)
             return response['block']
 
+    def get_blocks(self, blocks=[]):
+        # block_api method
+        api = 'block_api'
+        method = 'get_block'
+        if self.is_api_available(api, method):
+            # assemble list with multiple requests for batch
+            requests = [
+                Request('.'.join([api, method]), {
+                    'block_num': i
+                }) for i in blocks
+            ]
+            # get response
+            response = HttpClient(self.endpoint).send(requests)
+            # return the resulting block of each result
+            return [dict(r['result']['block'], **{'block_num': int(str(r['result']['block']['block_id'])[:8], base=16)}) for r in response]
+
+    def get_config(self):
+        # database_api method
+        api = 'database_api'
+        method = 'get_config'
+        if self.is_api_available(api, method):
+            return HttpClient(self.endpoint).request('.'.join([api, method]))
+
+    def get_methods(self):
+        # jsonrpc method
+        api = 'jsonrpc'
+        method = 'get_methods'
+        return HttpClient(self.endpoint).request('.'.join([api, method]))
+
     def get_ops_in_block(self, block_num, virtual_only=False):
         if self.is_api_available('account_history_api', 'get_ops_in_block', raiseException=False):
             return self.get_ops_in_block_from_account_history_api(block_num=block_num, virtual_only=virtual_only)
@@ -143,35 +172,6 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         response = HttpClient(self.endpoint).send(requests)
         # return the resulting ops
         return [r['result'] for r in response]
-
-    def get_blocks(self, blocks=[]):
-        # block_api method
-        api = 'block_api'
-        method = 'get_block'
-        if self.is_api_available(api, method):
-            # assemble list with multiple requests for batch
-            requests = [
-                Request('.'.join([api, method]), {
-                    'block_num': i
-                }) for i in blocks
-            ]
-            # get response
-            response = HttpClient(self.endpoint).send(requests)
-            # return the resulting block of each result
-            return [dict(r['result']['block'], **{'block_num': int(str(r['result']['block']['block_id'])[:8], base=16)}) for r in response]
-
-    def get_config(self):
-        # database_api method
-        api = 'database_api'
-        method = 'get_config'
-        if self.is_api_available(api, method):
-            return HttpClient(self.endpoint).request('.'.join([api, method]))
-
-    def get_methods(self):
-        # jsonrpc method
-        api = 'jsonrpc'
-        method = 'get_methods'
-        return HttpClient(self.endpoint).request('.'.join([api, method]))
 
     def get_status(self):
         # database_api method
