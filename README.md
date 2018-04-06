@@ -21,38 +21,38 @@ A simple library to stream blocks and operations for digesting into other medium
 
 ``` python
 from chainsync import ChainSync
-from chainsync.adapters.steem import SteemAdapter
+from chainsync.adapters.steemv2 import SteemV2Adapter
 
 adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
-for block in chainsync.stream(['blocks']):
-    print("{} - {}".format(block['block_num'], block['witness']))
+for dataType, data in chainsync.stream(['blocks']):
+    print("{} - {}".format(data['block_num'], data['witness']))
 ```
 
 ### Example - streaming operations
 
 ``` python
 from chainsync import ChainSync
-from chainsync.adapters.steem import SteemAdapter
+from chainsync.adapters.steemv2 import SteemV2Adapter
 
 adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
-for op in chainsync.stream(['ops']):
-    print("{} - {}".format(op['block_num'], op['operation_type']))
+for dataType, data in chainsync.stream(['ops']):
+    print("{} - {}".format(data['block_num'], data['operation_type']))
 ```
 
 ### Example - streaming operations with a whitelist
 
 ``` python
 from chainsync import ChainSync
-from chainsync.adapters.steem import SteemAdapter
+from chainsync.adapters.steemv2 import SteemV2Adapter
 
 adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
-for block in chainsync.stream(['blocks'], whitelist=['vote']):
+for dataType, op in chainsync.stream(['ops'], whitelist=['vote']):
     print("{} - {} by {}".format(op['block_num'], op['operation_type'], op['voter']))
 ```
 
