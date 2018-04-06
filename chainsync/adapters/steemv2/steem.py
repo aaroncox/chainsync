@@ -10,6 +10,8 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
 
     config = {
         'BLOCK_INTERVAL': 'STEEM_BLOCK_INTERVAL',
+        'HEAD_BLOCK_NUMBER': 'head_block_number',
+        'LAST_IRREVERSIBLE_BLOCK_NUM': 'last_irreversible_block_num',
         'VIRTUAL_OPS': [
             'fill_convert_request',
             'author_reward',

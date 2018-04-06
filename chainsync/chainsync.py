@@ -135,12 +135,28 @@ class ChainSync():
             else:
                 # else start on the next block
                 start_block = last_block_processed + 1
+            # Pause the loop for based on an estimated time the next block will arrive
+            time.sleep(self.get_approx_sleep_until_block(throttle, config, status['time']))
 
-            # Pause loop based on the blockchain block time
-            block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
-            time.sleep(block_interval)
+    def get_approx_sleep_until_block(self, throttle, config, ts):
+        # Get the rate the blockchain generates blocks
+        block_interval = config[self.adapter.config['BLOCK_INTERVAL']] if 'BLOCK_INTERVAL' in self.adapter.config else 3
 
-    def get_stream(self, what=['ops', 'blocks', 'ops_per_blocks'], config=None, start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
+        # Interpret the datetime string passed from the last status
+        blockchain_time = datetime(int(ts[:4]), int(ts[5:7]), int(ts[8:10]), int(ts[11:13]), int(ts[14:16]), int(ts[17:19]))
+
+        # Determine how long it's been since that last block
+        current_time = datetime.utcnow()
+        since_last_block = current_time.timestamp() - blockchain_time.timestamp()
+
+        # Add a delay based on when the next block is expected
+        if since_last_block < block_interval:
+            return block_interval - since_last_block
+        else:
+            # Otherwise add the throttle delay (defaults to 1 second) delay to avoid thrashing the API
+            return throttle
+
+    def get_stream(self, what=['blocks', 'config', 'status', 'ops', 'ops_per_blocks'], config=None, start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
 
         if not config:
             config = self.get_config()
