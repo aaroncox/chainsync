@@ -3,16 +3,29 @@ import datetime
 from chainsync import ChainSync
 from chainsync.adapters.steem import SteemAdapter
 
-adapter = SteemAdapter(endpoints=['https://api.steemit.com'], debug=False)
+adapter = SteemAdapter(endpoints=['https://direct.steemd.privex.io'], debug=False)
 chainsync = ChainSync(adapter)
+
+def print_event(dataType, data):
+    if dataType == "block":
+        print("[{}]: {} [{}] - #{}, previous: {}".format(datetime.datetime.now(), dataType, data['block_id'], data['block_num'], data['previous']))
+    if dataType == "op":
+        print("[{}]: {} [{}] - {}".format(datetime.datetime.now(), dataType, data['transaction_id'], data['operation_type']))
+    if dataType == "ops_per_block":
+        for height in data:
+            print("[{}]: {} - #{} had {} ops".format(datetime.datetime.now(), dataType, height, data[height]))
+    if dataType == 'tx':
+        print("[{}]: {} [{}] - {} ops".format(datetime.datetime.now(), dataType, data['transaction_id'], len(data['operations'])))
+    if dataType == 'status':
+        print("[{}]: {} - {} h:{} / i:{}".format(datetime.datetime.now(), dataType, data['time'], data['last_irreversible_block_num'], data['head_block_number']))
 
 print('\nGetting block 1')
 block = chainsync.get_block(1)
-print(block)
+print_event('block', block)
 
 print('\nGetting transaction c68435a34a7afc701771eb090f96526ed4c2a37b')
 tx = chainsync.get_transaction('c68435a34a7afc701771eb090f96526ed4c2a37b')
-print(tx)
+print_event('tx', tx)
 
 print('\nGetting multiple transactions')
 transactions = [
@@ -21,11 +34,11 @@ transactions = [
     'c68435a34a7afc701771eb090f96526ed4c2a37b',
 ]
 for tx in chainsync.get_transactions(transactions):
-    print(tx)
+    print_event('tx', tx)
 
 print('\nGetting ops in transaction c68435a34a7afc701771eb090f96526ed4c2a37b')
 for op in chainsync.get_ops_in_transaction('c68435a34a7afc701771eb090f96526ed4c2a37b'):
-    print(op)
+    print_event('op', op)
 
 print('\nGetting ops in multiple transactions')
 transactions = [
@@ -34,107 +47,94 @@ transactions = [
     'c68435a34a7afc701771eb090f96526ed4c2a37b',
 ]
 for op in chainsync.get_ops_in_transactions(transactions):
-    print(op)
+    print_event('op', op)
 
 print('\nGetting blocks 1, 10, 50, 250, 500')
 blocks = chainsync.get_blocks([1, 10, 50, 250, 500])
 for block in blocks:
-    print(block)
+    print_event('block', block)
 
 print('\nGetting blocks 1000-1005')
 blocks = chainsync.get_block_sequence(1000, 5)
 for block in blocks:
-    print(block)
+    print_event('block', block)
 
 print('\nGetting all ops in block 9284729...')
 for op in chainsync.get_ops_in_block(9284729):
-    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+    print_event('op', op)
 
 print('\nGetting withdraw_vesting ops in block 9284729...')
 for op in chainsync.get_ops_in_block(9284729, whitelist=['withdraw_vesting']):
-    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+    print_event('op', op)
 
 print('\nGetting all ops in block 1000000, 5000000, and 2000000...')
 for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000]):
-	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+    print_event('op', op)
 
 print('\nGetting producer_reward ops in block 1000000, 5000000, and 2000000...')
 for op in chainsync.get_ops_in_blocks([1000000, 5000000, 2000000], whitelist=['producer_reward']):
-	print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+    print_event('op', op)
 
-print('\nStreaming blocks, 100 at a time, from the irreversible height...')
-for dataType, block in chainsync.stream(['blocks'], batch_size=100, mode='irreversible'):
-    print("{}: {} - {}".format(datetime.datetime.now(), block['block_num'], block['witness']))
+print('\nStreaming blocks from head...')
+for dataType, data in chainsync.stream(['blocks']):
+    print_event(dataType, data)
 
-print('\nStreaming all ops...')
-for dataType, op in chainsync.stream(['ops']):
-    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+print('\nStreaming blocks from the irreversible height...')
+for dataType, data in chainsync.stream(['blocks'], mode='irreversible'):
+    print_event(dataType, data)
+
+print('\nStreaming status...')
+for dataType, data in chainsync.stream(['status']):
+    print_event(dataType, data)
+
+print('\nStreaming ops_per_blocks...')
+for dataType, data in chainsync.stream(['ops_per_blocks']):
+    print_event(dataType, data)
+
+print('\nStreaming blocks + status from head...')
+for dataType, data in chainsync.stream(['blocks', 'status']):
+    print_event(dataType, data)
+
+print('\nStreaming all op from head...')
+for dataType, data in chainsync.stream(['ops']):
+    print_event(dataType, data)
 
 print('\nStreaming all non-virtual ops...')
-for dataType, op in chainsync.stream(['ops'], virtual_ops=False):
-    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+for dataType, data in chainsync.stream(['ops'], virtual_ops=False):
+    print_event(dataType, data)
 
 print('\nStreaming all virtual ops...')
-for dataType, op in chainsync.stream(['ops'], regular_ops=False):
-    print("{}: {} [{}] - {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type']))
+for dataType, data in chainsync.stream(['ops'], regular_ops=False):
+    print_event(dataType, data)
 
 print('\nStreaming vote ops only...')
 for dataType, op in chainsync.stream(['ops'], whitelist=['vote']):
-    print("{}: {} - {} by {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['voter']))
+    print("[{}]: {} [{}] - {} by {}".format(datetime.datetime.now(), op['block_num'], op['transaction_id'], op['operation_type'], op['voter']))
 
 print('\nStreaming producer_reward virtual ops only...')
 for dataType, op in chainsync.stream(['ops'], whitelist=['producer_reward']):
-    print("{}: {} - {} for {} of {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['producer'], op['vesting_shares']))
+    print("[{}]: {} - {} for {} of {}".format(datetime.datetime.now(), op['block_num'], op['operation_type'], op['producer'], op['vesting_shares']))
 
-print('\nStreaming all blocks + ops + virtual ops + accurate counts of ops per block...')
-for dataType, data in chainsync.stream(['blocks', 'ops', 'ops_per_blocks']):
-    dataHeader = "{} #{}: {}".format(datetime.datetime.now(), data['block_num'], dataType)
-    if dataType == "op":
-        print("{} {} {}".format(dataHeader, data['transaction_id'], data['operation_type']))
-    if dataType == "block":
-        txCount = len(data['transactions'])
-        opCount = sum([len(tx['operations']) for tx in data['transactions']])
-        print("{} - #{} - tx: {} / ops: {}".format(dataHeader, data['block_num'], txCount, opCount))
-    if dataType == "ops_per_blocks":
-        for height in data:
-            print("{} - #{}: {}".format(dataHeader, height, data[height]))
-            
+print('\nStreaming all ops + status from head...')
+for dataType, data in chainsync.stream(['ops', 'status']):
+    print_event(dataType, data)
+
 print('\nStreaming all blocks + ops (no virtual ops)...')
 for dataType, data in chainsync.stream(['blocks', 'ops'], virtual_ops=False):
-    dataHeader = "{}: {}".format(datetime.datetime.now(), dataType)
-    if dataType == "op":
-        print("{} {} {}".format(dataHeader, data['transaction_id'], data['operation_type']))
-    if dataType == "block":
-        txCount = len(data['transactions'])
-        opCount = sum([len(tx['operations']) for tx in data['transactions']])
-        print("{} - tx: {} / ops: {}".format(dataHeader, txCount, opCount))
+    print_event(dataType, data)
 
 print('\nStreaming all blocks + ops (no virtual ops), filtering only votes...')
-for dataType, data in chainsync.stream(['blocks', 'ops'], whitelist=['vote'], virtual_ops=False):
-    dataHeader = "{}: {}".format(datetime.datetime.now(), dataType)
-    if dataType == "op":
-        print("{} {} {}".format(dataHeader, data['transaction_id'], data['operation_type']))
-    if dataType == "block":
-        txCount = len(data['transactions'])
-        opCount = sum([len(tx['operations']) for tx in data['transactions']])
-        print("{} - tx: {} / ops: {}".format(dataHeader, txCount, opCount))
+for dataType, data in chainsync.stream(['blocks', 'ops'], whitelist=['vote']):
+    print_event(dataType, data)
 
 print('\nStreaming all blocks + virtual ops (no normal ops)...')
 for dataType, data in chainsync.stream(['blocks', 'ops'], regular_ops=False):
-    dataHeader = "{}: {}".format(datetime.datetime.now(), dataType)
-    if dataType == "op":
-        print("{} {} {}".format(dataHeader, data['transaction_id'], data['operation_type']))
-    if dataType == "block":
-        txCount = len(data['transactions'])
-        opCount = sum([len(tx['operations']) for tx in data['transactions']])
-        print("{} - tx: {} / ops: {}".format(dataHeader, txCount, opCount))
+    print_event(dataType, data)
 
 print('\nStreaming all blocks + virtual ops (no normal ops), filtering only producer_reward...')
 for dataType, data in chainsync.stream(['blocks', 'ops'], regular_ops=False, whitelist=['producer_reward']):
-    dataHeader = "{}: {}".format(datetime.datetime.now(), dataType)
-    if dataType == "op":
-        print("{} {} {}".format(dataHeader, data['transaction_id'], data['operation_type']))
-    if dataType == "block":
-        txCount = len(data['transactions'])
-        opCount = sum([len(tx['operations']) for tx in data['transactions']])
-        print("{} - tx: {} / ops: {}".format(dataHeader, txCount, opCount))
+    print_event(dataType, data)
+
+print('\nStreaming all blocks + all ops + ops_per_blocks + status...')
+for dataType, data in chainsync.stream(['blocks', 'ops', 'ops_per_blocks', 'status']):
+    print_event(dataType, data)
