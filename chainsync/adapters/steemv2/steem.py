@@ -51,13 +51,6 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         opData['trx_in_block'] = op['trx_in_block']
         return opData
 
-    def is_api_available(self, api, method, raiseException=True):
-        if api not in self.apis:
-            if raiseException:
-                raise Exception('endpoint not capable of calling {}.{} ({} not available)'.format(api, method, api))
-            else:
-                return False
-        return True
     def format_op_from_get_transaction(self, tx, op, txIndex=False, opIndex=False):
         opType, opData = op
         opData['block_num'] = tx['block_num']

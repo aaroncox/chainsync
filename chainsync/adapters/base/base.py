@@ -64,6 +64,14 @@ class BaseAdapter():
                 self.apis.add(api)
                 self.api_methods.add(method)
 
+    def is_api_available(self, api, method, raiseException=True):
+        if api not in self.apis:
+            if raiseException:
+                raise Exception('endpoint not capable of calling {}.{} ({} not available)'.format(api, method, api))
+            else:
+                return False
+        return True
+
     def call(self, method, **kwargs):
         try:
             # Logging
