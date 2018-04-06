@@ -91,6 +91,15 @@ class ChainSync():
             # query and yield all virtual operations within this block
             yield from self.get_ops_in_block(block['block_num'], True, whitelist=whitelist)
 
+    def from_block_get_ops_regular(self, block, whitelist=[]):
+        # Loop through all transactions within this block
+        for txIndex, tx in enumerate(block['transactions']):
+            # If a whitelist is defined, only allow whitelisted operations through
+            ops = (op for op in tx['operations'] if not whitelist or op[0] in whitelist)
+            # Iterate and yield each op
+            for opIndex, op in enumerate(ops):
+                yield self.adapter.format_op_from_get_block(block, op, txIndex=txIndex, opIndex=opIndex)
+
     def stream(self, what=['blocks', 'config', 'status', 'ops', 'ops_per_blocks'], start_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, throttle=1, whitelist=[]):
 
         config = self.get_config()
