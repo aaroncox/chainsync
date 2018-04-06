@@ -27,23 +27,34 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         ]
     }
 
-    def opData(self, block, opType, opData, txIndex=False):
-        # Add some useful context to the operation
+    def format_op_from_get_block(self, block, op, txIndex=False, opIndex=False):
+        opType, opData = op
         opData['block_num'] = block['block_num']
+        opData['op_in_trx'] = opIndex
         opData['operation_type'] = opType
         opData['timestamp'] = block['timestamp']
         opData['transaction_id'] = block['transaction_ids'][txIndex]
+        opData['trx_in_block'] = txIndex
         return opData
 
-    def vOpData(self, vop):
-        # Extract the operation from the vop object format
-        opType, opData = vop['op']
-        # Add some useful context to the operation
-        opData['block_num'] = vop['block']
+    def format_op_from_get_ops_in_block(self, op):
+        opType, opData = op['op']
+        opData['block_num'] = op['block']
+        opData['op_in_trx'] = op['op_in_trx']
         opData['operation_type'] = opType
-        opData['timestamp'] = vop['timestamp']
-        opData['transaction_id'] = vop['trx_id']
-        opData['op_idx'] = vop['op_in_trx']
+        opData['timestamp'] = op['timestamp']
+        opData['transaction_id'] = op['trx_id']
+        opData['trx_in_block'] = op['trx_in_block']
+        return opData
+
+    def format_op_from_get_transaction(self, tx, op, txIndex=False, opIndex=False):
+        opType, opData = op
+        opData['block_num'] = tx['block_num']
+        opData['op_in_trx'] = opIndex
+        opData['operation_type'] = opType
+        opData['timestamp'] = False
+        opData['transaction_id'] = tx['transaction_id']
+        opData['trx_in_block'] = txIndex
         return opData
 
     def get_block(self, block_num):
