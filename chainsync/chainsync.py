@@ -1,3 +1,4 @@
+import copy
 import time
 
 from collections import Counter
@@ -6,8 +7,9 @@ from datetime import datetime
 
 class ChainSync():
 
-    def __init__(self, adapter, endpoints=['http://localhost:8090'], retry=True, debug=False):
+    def __init__(self, adapter, endpoints=['http://localhost:8090'], plugins=[], retry=True, debug=False):
         self.debug = debug
+        self.plugins = plugins
         if adapter:
             if debug:
                 adapter.debug = debug
@@ -190,7 +192,11 @@ class ChainSync():
             return throttle
 
     def yield_event(self, what, data):
-        return (what, data)
+        formatted = copy.deepcopy(data)
+        if self.plugins:
+            for plugin in self.plugins:
+                formatted = getattr(plugin, what)(formatted)
+        return (what, formatted)
 
     def get_stream(self, what=['blocks', 'config', 'status', 'ops', 'ops_per_blocks'], config=None, start_block=None, end_block=None, mode='head', batch_size=10, virtual_ops=True, regular_ops=True, whitelist=[]):
 
