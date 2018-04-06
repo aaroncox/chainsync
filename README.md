@@ -23,7 +23,7 @@ A simple library to stream blocks and operations for digesting into other medium
 from chainsync import ChainSync
 from chainsync.adapters.steemv2 import SteemV2Adapter
 
-adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
+adapter = SteemV2Adapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
 for dataType, data in chainsync.stream(['blocks']):
@@ -36,7 +36,7 @@ for dataType, data in chainsync.stream(['blocks']):
 from chainsync import ChainSync
 from chainsync.adapters.steemv2 import SteemV2Adapter
 
-adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
+adapter = SteemV2Adapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
 for dataType, data in chainsync.stream(['ops']):
@@ -49,7 +49,7 @@ for dataType, data in chainsync.stream(['ops']):
 from chainsync import ChainSync
 from chainsync.adapters.steemv2 import SteemV2Adapter
 
-adapter = SteemAdapter(endpoints=['https://api.steemit.com'])
+adapter = SteemV2Adapter(endpoints=['https://api.steemit.com'])
 chainsync = ChainSync(adapter)
 
 for dataType, op in chainsync.stream(['ops'], whitelist=['vote']):
