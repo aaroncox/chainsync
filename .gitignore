@@ -6,3 +6,4 @@ dist
 build
 chainsync/adapters/steemv2test
 publish.sh
+.pytest_*
