@@ -47,7 +47,8 @@ class ChainSync():
         return self.adapter.call('get_blocks', blocks=blocks)
 
     def get_block_sequence(self, start_block=1, limit=10):
-        yield from self.get_blocks(list(range(start_block, start_block + limit)))
+        blocks = list(range(start_block, start_block + limit))
+        yield from self.get_blocks(blocks)
 
     def get_ops_in_block(self, block_num, virtual_only=False, whitelist=[]):
         for vop in self.adapter.call('get_ops_in_block', block_num=block_num, virtual_only=virtual_only):
@@ -197,7 +198,7 @@ class ChainSync():
 
         # If no end_block is specified, assume a single iteration starting at start_block and ending at start_block + batch_size
         if not end_block:
-            end_block = start_block + batch_size
+            end_block = start_block + batch_size - 1
 
         last_block_processed = start_block
 
