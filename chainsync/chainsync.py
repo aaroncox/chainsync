@@ -23,11 +23,11 @@ class ChainSync():
         status = self.get_status()
 
         # determine the current head block
-        head_block = status['head_block_number']
+        head_block = status[self.adapter.config['HEAD_BLOCK_NUMBER']]
 
         # If set to irreversible, override the head block
         if mode == 'irreversible':
-            head_block = status['last_irreversible_block_num']
+            head_block = status[self.adapter.config['LAST_IRREVERSIBLE_BLOCK_NUM']]
 
         return head_block
 
