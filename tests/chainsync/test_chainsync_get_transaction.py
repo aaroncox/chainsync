@@ -21,3 +21,7 @@ class ChainSyncGetTransactionTestCase(ChainSyncBaseTestCase):
     def test_get_transaction_exception_no_transaction_id(self):
         with self.assertRaises(TypeError) as context:
             self.chainsync.get_transaction()
+
+    def test_get_transaction_exception_invalid_transaction_id(self):
+        with self.assertRaises(Exception) as context:
+            self.chainsync.get_transaction('0000000000000000000000000000000000000000')

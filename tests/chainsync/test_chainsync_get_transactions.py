@@ -25,3 +25,13 @@ class ChainSyncGetTransactionsTestCase(ChainSyncBaseTestCase):
     def test_get_transactions_exception_no_transaction_id(self):
         with self.assertRaises(TypeError) as context:
             self.chainsync.get_transactions()
+
+    def test_get_transactions_exception_invalid_transaction_id(self):
+        with self.assertRaises(Exception) as context:
+            txs = [
+                'a3815d4a17f1331481ec6bf89ba0844ce16175bc',
+                '0000000000000000000000000000000000000000',
+            ]
+            result = self.chainsync.get_transactions(txs)
+            for tx in result:
+                self.assertTrue(tx['transaction_id'] in txs)

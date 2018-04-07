@@ -13,7 +13,7 @@ class ChainSyncGetTransactionsTestCase(ChainSyncBaseTestCase):
         )
         self.chainsync = ChainSync(adapter=adapter, retry=False)
 
-    def test_get_transactions(self):
+    def test_get_ops_in_transactions(self):
         blocks = [
             20905050,
             20905025,
@@ -26,6 +26,14 @@ class ChainSyncGetTransactionsTestCase(ChainSyncBaseTestCase):
         for op in result:
             self.assertTrue(op['block_num'] in blocks)
 
-    def test_get_transactions_exception_no_transaction_id(self):
+    def test_get_ops_in_transactions_exception_no_transaction_id(self):
         with self.assertRaises(TypeError) as context:
             self.chainsync.get_transactions()
+
+    def test_get_ops_in_transactions_exception_invalid_transaction_id(self):
+        with self.assertRaises(Exception) as context:
+            txs = [
+                'a3815d4a17f1331481ec6bf89ba0844ce16175bc',
+                '0000000000000000000000000000000000000000',  # invalid tx
+            ]
+            results = [op in self.chainsync.get_ops_in_transactions(txs)]

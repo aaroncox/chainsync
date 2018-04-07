@@ -32,3 +32,15 @@ class ChainSyncGetOpsInBlocksTestCase(ChainSyncBaseTestCase):
         results = self.chainsync.get_ops_in_blocks(blocks, whitelist=whitelist)
         for idx, result in enumerate(results):
             self.assertTrue(result['operation_type'] in whitelist)
+
+    def test_get_ops_in_blocks_regular_and_virtual(self):
+        blocks = [1093, 1094]  # contains pow (non-virtual) + producer (virtual) ops
+        results = self.chainsync.get_ops_in_blocks(blocks, virtual_only=False)
+        for idx, result in enumerate(results):
+            self.assertTrue(result['operation_type'] in ['pow', 'producer_reward'])
+
+    def test_get_ops_in_blocks_virtual_only(self):
+        blocks = [1093, 1094]  # contains pow (non-virtual) + producer (virtual) ops
+        results = self.chainsync.get_ops_in_blocks(blocks, virtual_only=True)
+        for idx, result in enumerate(results):
+            self.assertTrue(result['operation_type'] in ['producer_reward'])
