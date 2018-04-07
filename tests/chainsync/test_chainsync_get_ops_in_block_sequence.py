@@ -24,7 +24,6 @@ class ChainSyncGetOpsInBlockSequenceTestCase(ChainSyncBaseTestCase):
         results = self.chainsync.get_ops_in_block_sequence('1093', '2')
         for idx, result in enumerate(results):
             self.assertTrue(result['block_num'] in blocks)
-        self.assertTrue(False)
 
     def test_get_ops_in_block_sequence_filtered(self):
         blocks = [1093, 1094]  # contains pow (non-virtual) + producer (virtual) ops
