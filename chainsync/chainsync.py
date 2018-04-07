@@ -23,7 +23,7 @@ class ChainSync():
     def get_status(self):
         return self.adapter.call('get_status')
 
-    def get_head_block(self, mode='head', status=False):
+    def get_head_block(self, mode='head', return_status=False):
         # get status from the blockchain
         status = self.get_status()
 
@@ -35,7 +35,7 @@ class ChainSync():
             head_block = status[self.adapter.config['LAST_IRREVERSIBLE_BLOCK_NUM']]
 
         # A flag to return status alongside the block number
-        if status:
+        if return_status:
             return (head_block, status)
 
         return head_block
@@ -138,7 +138,7 @@ class ChainSync():
         while True:
 
             # Determine what height to stream up to
-            end_block, status = self.get_head_block(mode, status=True)
+            end_block, status = self.get_head_block(mode, return_status=True)
 
             # Yield event if the 'status' parameter is set
             if 'status' in what:
