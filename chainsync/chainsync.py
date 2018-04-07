@@ -96,6 +96,15 @@ class ChainSync():
         # ensure a block is passed (could use better checks)
         if not isinstance(block, dict):
             raise TypeError
+        # check the whitelist for virtual operations
+        if whitelist and 'VIRTUAL_OPS' in self.adapter.config:
+            # get a set of all the different virtual op types
+            virtual_ops = set(self.adapter.config['VIRTUAL_OPS'])
+            # check for any whitelist operations that are virtual
+            matches = [vop for vop in whitelist if vop in virtual_ops]
+            # if any matches, force enable virtual ops
+            if matches:
+                virtual_ops = True
         # ensure regular_ops should be yielded
         if regular_ops:
             yield from self.from_block_get_ops_regular(block, whitelist=whitelist)
