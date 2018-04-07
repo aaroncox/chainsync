@@ -7,3 +7,4 @@ build
 chainsync/adapters/steemv2test
 publish.sh
 .pytest_*
+*.pyc
