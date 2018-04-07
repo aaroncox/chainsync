@@ -93,6 +93,9 @@ class ChainSync():
         yield from self.adapter.call('get_transactions', transaction_ids=transaction_ids)
 
     def from_block_get_ops(self, block, virtual_ops=False, regular_ops=True, whitelist=[]):
+        # ensure a block is passed (could use better checks)
+        if not isinstance(block, dict):
+            raise TypeError
         # ensure regular_ops should be yielded
         if regular_ops:
             yield from self.from_block_get_ops_regular(block, whitelist=whitelist)
@@ -102,6 +105,9 @@ class ChainSync():
             yield from self.get_ops_in_block(block['block_num'], True, whitelist=whitelist)
 
     def from_block_get_ops_regular(self, block, whitelist=[]):
+        # ensure a block is passed (could use better checks)
+        if not isinstance(block, dict):
+            raise TypeError
         # Loop through all transactions within this block
         for txIndex, tx in enumerate(block['transactions']):
             # If a whitelist is defined, only allow whitelisted operations through
