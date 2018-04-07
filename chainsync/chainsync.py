@@ -48,8 +48,8 @@ class ChainSync():
             raise TypeError
         return self.adapter.call('get_blocks', blocks=blocks)
 
-    def get_block_sequence(self, start_block=1, limit=10):
-        blocks = list(range(start_block, start_block + limit))
+    def get_block_sequence(self, start_block, limit):
+        blocks = list(range(int(start_block), int(start_block) + int(limit)))
         yield from self.get_blocks(blocks)
 
     def get_ops_in_block(self, block_num, virtual_only=False, whitelist=[]):
@@ -65,8 +65,9 @@ class ChainSync():
                 if not whitelist or op['op'][0] in whitelist:
                     yield self.adapter.format_op_from_get_ops_in_block(op)
 
-    def get_ops_in_block_sequence(self, start_block=1, limit=10, virtual_only=False, whitelist=[]):
-        yield from self.get_ops_in_blocks(list(range(start_block, start_block + limit)), virtual_only=virtual_only, whitelist=whitelist)
+    def get_ops_in_block_sequence(self, start_block, limit, virtual_only=False, whitelist=[]):
+        blocks = list(range(int(start_block), int(start_block) + int(limit)))
+        yield from self.get_ops_in_blocks(blocks, virtual_only=virtual_only, whitelist=whitelist)
 
     def get_ops_in_transaction(self, transaction_id):
         if not isinstance(transaction_id, str):
