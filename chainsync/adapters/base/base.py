@@ -72,7 +72,7 @@ class BaseAdapter():
                 return False
         return True
 
-    def call(self, method, **kwargs):
+    def call(self, method, raiseException=True, **kwargs):
         try:
             # Logging
             # print("\n")
@@ -143,5 +143,5 @@ class BaseAdapter():
                 # print("called: {}".format(method))
                 # print("kawrgs: {}".format(kwargs))
                 # print("-------------")
-
-                raise Exception("rpcerror: '{}' (not retrying)".format(e))
+                if raiseException:
+                    raise Exception("rpcerror: '{}' (not retrying)".format(e))
