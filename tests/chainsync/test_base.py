@@ -1,13 +1,10 @@
 import unittest
+import pytest
 
 from chainsync import ChainSync
-from chainsync.adapters.steem import SteemAdapter
 
 
+@pytest.mark.usefixtures("client")
 class ChainSyncBaseTestCase(unittest.TestCase):
     def setUp(self):
-        adapter = SteemAdapter(
-            endpoints='https://rpc.buildteam.io',
-            retry=False
-        )
-        self.chainsync = ChainSync(adapter=adapter, retry=False)
+        self.chainsync = ChainSync(adapter=self.adapter, retry=False)

@@ -7,7 +7,6 @@ from chainsync.adapters.steem import SteemAdapter
 class ChainSyncMainTestCase(ChainSyncBaseTestCase):
 
     def test_main_debug_flag_default_false(self):
-        print(self.chainsync.debug)
         self.assertEqual(self.chainsync.debug, False)
 
     def test_main_debug_flag_set_true(self):
