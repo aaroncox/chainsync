@@ -1,8 +1,6 @@
 from chainsync.adapters.abstract import AbstractAdapter
 from chainsync.adapters.base import BaseAdapter
-from chainsync.utils.http_client import HttpClient
 
-from jsonrpcclient.request import Request
 
 class SteemAdapter(AbstractAdapter, BaseAdapter):
 
@@ -60,7 +58,7 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
         return opData
 
     def get_block(self, block_num):
-        response = HttpClient(self.endpoint).request('get_block', [block_num])
+        response = self.client.request('get_block', [block_num])
         try:
             response['block_num'] = int(str(response['block_id'])[:8], base=16)
         except KeyError as e:
@@ -73,23 +71,23 @@ class SteemAdapter(AbstractAdapter, BaseAdapter):
             yield self.call('get_block', block_num=int(i))
 
     def get_config(self):
-        return HttpClient(self.endpoint).request('get_config')
+        return self.client.request('get_config')
 
     def get_methods(self):
         return 'NOT_SUPPORTED'
 
     def get_ops_in_block(self, block_num, virtual_only=False):
-        return HttpClient(self.endpoint).request('get_ops_in_block', [block_num, virtual_only])
+        return self.client.request('get_ops_in_block', [block_num, virtual_only])
 
     def get_ops_in_blocks(self, blocks, virtual_only=False):
         for i in blocks:
             yield self.call('get_ops_in_block', block_num=i, virtual_only=virtual_only)
 
     def get_status(self):
-        return HttpClient(self.endpoint).request('get_dynamic_global_properties')
+        return self.client.request('get_dynamic_global_properties')
 
     def get_transaction(self, transaction_id=1):
-        response = HttpClient(self.endpoint).request('get_transaction', [transaction_id])
+        response = self.client.request('get_transaction', [transaction_id])
         try:
             response['block_num'] = int(str(response['block_id'])[:8], base=16)
         except KeyError as e:

@@ -2,16 +2,23 @@ import logging
 import requests
 import time
 
+from urllib.parse import urlparse
+from websocket._exceptions import WebSocketConnectionClosedException
+
+from chainsync.clients.http.rpc import Client as http_client
+from chainsync.clients.ws.rpc import Client as ws_client
+
 chainsync_defaults = {
     'endpoint': 'http://localhost:8090',
     'endpoints': ['http://localhost:8090'],
 }
 
+
 class BaseAdapter():
 
     debug = False
 
-    def __init__(self, endpoints=['http://localhost:8090'], retry=True, debug=False):
+    def __init__(self, endpoints=None, retry=True, debug=False):
 
         self.debug = debug
         # print("debug: {}".format(self.debug))
@@ -40,6 +47,9 @@ class BaseAdapter():
             self.endpoint = chainsync_defaults['endpoint']
             self.endpoints = chainsync_defaults['endpoints']
 
+        # Determine what type of client this adapter needs
+        self.init_client()
+
         # Save a modifiable copy of the endpoints available
         self.additional_endpoints = self.endpoints[:]
 
@@ -49,6 +59,14 @@ class BaseAdapter():
 
         # Determine endpoint capabilities
         self.get_available_apis()
+
+    def init_client(self):
+        if urlparse(self.endpoint).scheme in ['ws', 'wss']:
+            print("init rpc client")
+            self.client = ws_client(self.endpoint)
+        else:
+            print("init http client")
+            self.client = http_client(self.endpoint)
 
     def get_available_apis(self):
         # Get available methods from the current adapter
@@ -106,6 +124,10 @@ class BaseAdapter():
                     # Push the previously unavailable back to the end of the list
                     self.additional_endpoints.append(unavailable_endpoint)
 
+                # If the exception is that the websocket has closed, reinit the client
+                if isinstance(e, WebSocketConnectionClosedException) and self.client:
+                    self.init_client()
+
                 # Determine endpoint capabilities
                 self.get_available_apis()
 
@@ -123,6 +145,7 @@ class BaseAdapter():
 
             # If no endpoints are reachable, and retry enabled, try again
             elif self.retry:
+
                 # print("-------------")
                 print("rpcerror: '{}' (retrying in 3 seconds)".format(e))
                 # print("endpoint: {}".format(self.endpoint))
@@ -133,6 +156,10 @@ class BaseAdapter():
                 # print("-------------")
 
                 time.sleep(3)
+
+                # If the exception is that the websocket has closed, reinit the client
+                if isinstance(e, WebSocketConnectionClosedException) and self.client:
+                    self.init_client()
 
                 # Try again
                 return self.call(method, **kwargs)

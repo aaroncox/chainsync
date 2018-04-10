@@ -2,7 +2,6 @@ from datetime import datetime
 
 from chainsync.adapters.abstract import AbstractAdapter
 from chainsync.adapters.base import BaseAdapter
-from chainsync.utils.http_client import HttpClient
 
 from jsonrpcclient.request import Request
 
@@ -67,7 +66,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         method = 'get_block'
         # ensure the API is available
         if self.is_api_available(api, method):
-            response = HttpClient(self.endpoint).request('.'.join([api, method]), block_num=block_num)
+            response = self.client.request('.'.join([api, method]), block_num=block_num)
             response['block']['block_num'] = int(str(response['block']['block_id'])[:8], base=16)
             return response['block']
 
@@ -83,7 +82,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
                 }) for i in blocks
             ]
             # get response
-            response = HttpClient(self.endpoint).send(requests)
+            response = self.client.send(requests)
             # return the resulting block of each result
             return [dict(r['result']['block'], **{'block_num': int(str(r['result']['block']['block_id'])[:8], base=16)}) for r in response]
 
@@ -92,13 +91,13 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         api = 'database_api'
         method = 'get_config'
         if self.is_api_available(api, method):
-            return HttpClient(self.endpoint).request('.'.join([api, method]))
+            return self.client.request('.'.join([api, method]))
 
     def get_methods(self):
         # jsonrpc method
         api = 'jsonrpc'
         method = 'get_methods'
-        return HttpClient(self.endpoint).request('.'.join([api, method]))
+        return self.client.request('.'.join([api, method]))
 
     def get_ops_in_block(self, block_num, virtual_only=False):
         if self.is_api_available('account_history_api', 'get_ops_in_block', raiseException=False):
@@ -112,7 +111,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         # account_history_api method
         api = 'account_history_api'
         method = 'get_ops_in_block'
-        response = HttpClient(self.endpoint).request('.'.join([api, method]), {
+        response = self.client.request('.'.join([api, method]), {
             'block_num': block_num,
             'only_virtual': virtual_only
         })
@@ -122,7 +121,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         # condenser_api method
         api = 'condenser_api'
         method = 'get_ops_in_block'
-        response = HttpClient(self.endpoint).request('.'.join([api, method]), [
+        response = Client(self.endpoint).request('.'.join([api, method]), [
             block_num,
             virtual_only
         ])
@@ -148,7 +147,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
             }) for i in blocks
         ]
         # get response
-        response = HttpClient(self.endpoint).send(requests)
+        response = self.client.send(requests)
         # return the resulting ops
         return [r['result']['ops'] for r in response]
 
@@ -164,7 +163,7 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
             ]) for i in blocks
         ]
         # get response
-        response = HttpClient(self.endpoint).send(requests)
+        response = self.client.send(requests)
         # return the resulting ops
         return [r['result'] for r in response]
 
@@ -173,10 +172,10 @@ class SteemV2Adapter(AbstractAdapter, BaseAdapter):
         api = 'database_api'
         method = 'get_dynamic_global_properties'
         if self.is_api_available(api, method):
-            return HttpClient(self.endpoint).request('.'.join([api, method]))
+            return self.client.request('.'.join([api, method]))
 
     def get_transaction(self, transaction_id=1):
-        response = HttpClient(self.endpoint).request('condenser_api.get_transaction', [transaction_id])
+        response = self.client.request('condenser_api.get_transaction', [transaction_id])
         # try:
         #     response['block_num'] = int(str(response['block_id'])[:8], base=16)
         # except KeyError as e:
